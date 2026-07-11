@@ -1,0 +1,25 @@
+# Build outputs
+target/
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Codex/local agent metadata
+.agents/
+.codex/
