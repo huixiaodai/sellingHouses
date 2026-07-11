@@ -93,9 +93,9 @@
 
 | 编码 | 角色 |
 | --- | --- |
-| `1` | 超级管理员 |
-| `2` | 销售 |
-| `3` | 购房用户 |
+| `ADMIN` | 超级管理员 |
+| `SALES` | 销售 |
+| `CUSTOMER` | 购房用户 |
 
 ### 1.8 房源状态编码
 
@@ -112,7 +112,7 @@
 
 - URL：`POST /api/auth/login`
 - 权限：公开
-- 说明：三个角色共用登录接口，登录成功后前端根据 `role` 跳转不同首页。
+- 说明：三个角色共用登录接口，登录成功后前端根据 `roleCode` 跳转不同首页。
 
 请求参数：
 
@@ -129,7 +129,7 @@
 | `userId` | Long | 用户ID |
 | `username` | String | 登录账号 |
 | `realName` | String | 真实姓名 |
-| `role` | Integer | 角色 |
+| `roleCode` | String | 角色编码：ADMIN、SALES、CUSTOMER |
 | `homePath` | String | 登录后首页路径 |
 
 ### 2.2 用户注册
@@ -163,7 +163,7 @@
 | `username` | String | 登录账号 |
 | `realName` | String | 真实姓名 |
 | `phone` | String | 脱敏手机号 |
-| `role` | Integer | 角色 |
+| `roleCode` | String | 角色编码：ADMIN、SALES、CUSTOMER |
 | `status` | Integer | 状态 |
 
 ### 2.4 退出登录
@@ -613,7 +613,7 @@
 | --- | --- | --- | --- |
 | `title` | String | 是 | 公告标题 |
 | `content` | String | 是 | 公告内容 |
-| `targetRole` | Integer | 是 | 可见角色：0全部，2销售，3购房用户 |
+| `targetRoleCode` | String | 是 | 可见角色：ALL全部，SALES销售，CUSTOMER购房用户 |
 
 响应数据：`id`
 
@@ -687,7 +687,7 @@
 | `pageNo` | Integer | 否 | 页码 |
 | `pageSize` | Integer | 否 | 每页条数 |
 | `keyword` | String | 否 | 账号、姓名、手机号 |
-| `role` | Integer | 否 | 角色 |
+| `roleCode` | String | 否 | 角色编码：ADMIN、SALES、CUSTOMER |
 | `status` | Integer | 否 | 状态 |
 
 响应数据：`PageResult<UserVO>`

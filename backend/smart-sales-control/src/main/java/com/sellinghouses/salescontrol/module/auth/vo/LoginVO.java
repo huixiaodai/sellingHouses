@@ -21,8 +21,8 @@ public class LoginVO {
     @Schema(description = "真实姓名")
     private final String realName;
 
-    @Schema(description = "角色")
-    private final Integer role;
+    @Schema(description = "角色编码")
+    private final String roleCode;
 
     @Schema(description = "登录后首页路径")
     private final String homePath;

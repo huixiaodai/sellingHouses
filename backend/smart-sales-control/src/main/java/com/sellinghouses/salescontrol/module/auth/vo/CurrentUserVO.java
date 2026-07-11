@@ -21,8 +21,8 @@ public class CurrentUserVO {
     @Schema(description = "脱敏手机号")
     private final String phone;
 
-    @Schema(description = "角色")
-    private final Integer role;
+    @Schema(description = "角色编码")
+    private final String roleCode;
 
     @Schema(description = "状态")
     private final Integer status;

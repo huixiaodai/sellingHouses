@@ -20,17 +20,17 @@ public class JwtUtil {
 
     private static final String CLAIM_USERNAME = "username";
 
-    private static final String CLAIM_ROLE = "role";
+    private static final String CLAIM_ROLE_CODE = "roleCode";
 
     private final JwtProperties jwtProperties;
 
-    public String generateToken(Long userId, String username, Integer role) {
+    public String generateToken(Long userId, String username, String roleCode) {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getExpirationMinutes() * 60);
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim(CLAIM_USERNAME, username)
-                .claim(CLAIM_ROLE, role)
+                .claim(CLAIM_ROLE_CODE, roleCode)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiration))
                 .signWith(secretKey())

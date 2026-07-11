@@ -7,23 +7,23 @@ import lombok.Getter;
 @Getter
 public enum UserRoleEnum {
 
-    ADMIN(1, "超级管理员", "/pages/admin/dashboard/index"),
-    SALES(2, "销售", "/pages/sales/dashboard/index"),
-    CUSTOMER(3, "购房用户", "/pages/home/home");
+    ADMIN("ADMIN", "超级管理员", "/dashboard"),
+    SALES("SALES", "销售", "/pages/home/index"),
+    CUSTOMER("CUSTOMER", "购房用户", "/pages/home/index");
 
-    private final Integer code;
+    private final String code;
 
     private final String desc;
 
     private final String homePath;
 
-    UserRoleEnum(Integer code, String desc, String homePath) {
+    UserRoleEnum(String code, String desc, String homePath) {
         this.code = code;
         this.desc = desc;
         this.homePath = homePath;
     }
 
-    public static UserRoleEnum fromCode(Integer code) {
+    public static UserRoleEnum fromCode(String code) {
         for (UserRoleEnum value : values()) {
             if (value.getCode().equals(code)) {
                 return value;

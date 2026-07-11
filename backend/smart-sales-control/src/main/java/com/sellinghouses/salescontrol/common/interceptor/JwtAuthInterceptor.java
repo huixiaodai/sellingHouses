@@ -43,7 +43,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         if (!UserStatusEnum.ENABLED.getCode().equals(user.getStatus())) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "账号已被禁用");
         }
-        LoginUserHolder.set(new LoginUserContext(user.getId(), user.getUsername(), user.getRealName(), user.getRole()));
+        LoginUserHolder.set(new LoginUserContext(user.getId(), user.getUsername(), user.getRealName(), user.getPrimaryRoleCode()));
         return true;
     }
 

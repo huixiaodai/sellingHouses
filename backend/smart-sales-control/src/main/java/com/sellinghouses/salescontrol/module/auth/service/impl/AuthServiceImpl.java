@@ -16,6 +16,7 @@ import com.sellinghouses.salescontrol.module.auth.vo.CurrentUserVO;
 import com.sellinghouses.salescontrol.module.auth.vo.LoginVO;
 import com.sellinghouses.salescontrol.module.user.entity.User;
 import com.sellinghouses.salescontrol.module.user.mapper.UserMapper;
+import com.sellinghouses.salescontrol.module.user.mapper.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ import org.springframework.util.StringUtils;
 public class AuthServiceImpl implements AuthService {
 
     private final UserMapper userMapper;
+
+    private final UserRoleMapper userRoleMapper;
 
     private final JwtUtil jwtUtil;
 
@@ -39,14 +42,14 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(ErrorCode.FORBIDDEN, "账号已被禁用");
         }
         userMapper.updateLastLoginTime(user.getId());
-        UserRoleEnum roleEnum = UserRoleEnum.fromCode(user.getRole());
-        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
+        UserRoleEnum roleEnum = UserRoleEnum.fromCode(user.getPrimaryRoleCode());
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getPrimaryRoleCode());
         return LoginVO.builder()
                 .token(token)
                 .userId(user.getId())
                 .username(user.getUsername())
                 .realName(user.getRealName())
-                .role(user.getRole())
+                .roleCode(user.getPrimaryRoleCode())
                 .homePath(roleEnum.getHomePath())
                 .build();
     }
@@ -69,9 +72,13 @@ public class AuthServiceImpl implements AuthService {
         user.setRealName(request.getRealName());
         user.setPhone(request.getPhone());
         user.setWxOpenid(request.getWxOpenid());
-        user.setRole(UserRoleEnum.CUSTOMER.getCode());
+        user.setPrimaryRoleCode(UserRoleEnum.CUSTOMER.getCode());
         user.setStatus(UserStatusEnum.ENABLED.getCode());
         userMapper.insert(user);
+        int rows = userRoleMapper.insertByRoleCode(user.getId(), UserRoleEnum.CUSTOMER.getCode(), user.getId());
+        if (rows == 0) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "默认角色不存在");
+        }
     }
 
     @Override
@@ -86,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
                 .username(user.getUsername())
                 .realName(user.getRealName())
                 .phone(MaskUtil.maskPhone(user.getPhone()))
-                .role(user.getRole())
+                .roleCode(user.getPrimaryRoleCode())
                 .status(user.getStatus())
                 .build();
     }

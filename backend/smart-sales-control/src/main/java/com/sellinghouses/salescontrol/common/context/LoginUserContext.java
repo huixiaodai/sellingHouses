@@ -13,5 +13,5 @@ public class LoginUserContext {
 
     private final String realName;
 
-    private final Integer role;
+    private final String roleCode;
 }

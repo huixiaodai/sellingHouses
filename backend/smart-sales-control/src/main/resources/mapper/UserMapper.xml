@@ -11,7 +11,7 @@
         <result column="phone" property="phone"/>
         <result column="wx_openid" property="wxOpenid"/>
         <result column="avatar_url" property="avatarUrl"/>
-        <result column="role" property="role"/>
+        <result column="primary_role_code" property="primaryRoleCode"/>
         <result column="status" property="status"/>
         <result column="last_login_time" property="lastLoginTime"/>
         <result column="create_time" property="createTime"/>
@@ -26,7 +26,7 @@
         phone,
         wx_openid,
         avatar_url,
-        role,
+        primary_role_code,
         status,
         last_login_time,
         create_time,
@@ -73,7 +73,7 @@
             phone,
             wx_openid,
             avatar_url,
-            role,
+            primary_role_code,
             status
         ) VALUES (
             #{username},
@@ -82,7 +82,7 @@
             #{phone},
             #{wxOpenid},
             #{avatarUrl},
-            #{role},
+            #{primaryRoleCode},
             #{status}
         )
     </insert>

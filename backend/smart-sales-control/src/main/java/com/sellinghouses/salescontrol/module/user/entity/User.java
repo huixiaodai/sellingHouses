@@ -22,7 +22,7 @@ public class User {
 
     private String avatarUrl;
 
-    private Integer role;
+    private String primaryRoleCode;
 
     private Integer status;
 
