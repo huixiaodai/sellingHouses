@@ -11,6 +11,8 @@
         <result column="floor_no" property="floorNo"/>
         <result column="area" property="area"/>
         <result column="price" property="price"/>
+        <result column="cover" property="cover"/>
+        <result column="images" property="images"/>
         <result column="layout" property="layout"/>
         <result column="orientation" property="orientation"/>
         <result column="decoration" property="decoration"/>
@@ -23,6 +25,26 @@
         <result column="update_user" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="RoomQueryResultMap" type="com.sellinghouses.salescontrol.module.room.dto.RoomQueryDTO">
+        <id column="id" property="id"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="building_name" property="buildingName"/>
+        <result column="unit_id" property="unitId"/>
+        <result column="unit_name" property="unitName"/>
+        <result column="room_no" property="roomNo"/>
+        <result column="floor_no" property="floorNo"/>
+        <result column="area" property="area"/>
+        <result column="price" property="price"/>
+        <result column="cover" property="cover"/>
+        <result column="images" property="images"/>
+        <result column="layout" property="layout"/>
+        <result column="orientation" property="orientation"/>
+        <result column="decoration" property="decoration"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
     <sql id="RoomColumns">
         id,
         building_id,
@@ -31,6 +53,8 @@
         floor_no,
         area,
         price,
+        cover,
+        images,
         layout,
         orientation,
         decoration,
@@ -51,6 +75,8 @@
             floor_no,
             area,
             price,
+            cover,
+            images,
             layout,
             orientation,
             decoration,
@@ -65,6 +91,8 @@
             #{floorNo},
             #{area},
             #{price},
+            #{cover},
+            #{images},
             #{layout},
             #{orientation},
             #{decoration},
@@ -83,6 +111,8 @@
             floor_no = #{floorNo},
             area = #{area},
             price = #{price},
+            cover = #{cover},
+            images = #{images},
             layout = #{layout},
             orientation = #{orientation},
             decoration = #{decoration},
@@ -130,6 +160,33 @@
         LIMIT 1
     </select>
 
+    <select id="selectDetailById" resultMap="RoomQueryResultMap">
+        SELECT
+            r.id,
+            r.building_id,
+            b.name AS building_name,
+            r.unit_id,
+            bu.name AS unit_name,
+            r.room_no,
+            r.floor_no,
+            r.area,
+            r.price,
+            r.cover,
+            r.images,
+            r.layout,
+            r.orientation,
+            r.decoration,
+            r.status,
+            r.remark,
+            r.create_time
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
+        WHERE r.id = #{id}
+          AND r.deleted = 0
+        LIMIT 1
+    </select>
+
     <select id="countByRoomNo" resultType="int">
         SELECT COUNT(1)
         FROM room
@@ -148,26 +205,44 @@
           AND deleted = 0
     </select>
 
-    <select id="selectPage" resultMap="RoomResultMap">
+    <select id="selectPage" resultMap="RoomQueryResultMap">
         SELECT
-        <include refid="RoomColumns"/>
-        FROM room
-        WHERE deleted = 0
+            r.id,
+            r.building_id,
+            b.name AS building_name,
+            r.unit_id,
+            bu.name AS unit_name,
+            r.room_no,
+            r.floor_no,
+            r.area,
+            r.price,
+            r.cover,
+            r.images,
+            r.layout,
+            r.orientation,
+            r.decoration,
+            r.status,
+            r.remark,
+            r.create_time
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
+        WHERE r.deleted = 0
         <if test="buildingId != null">
-          AND building_id = #{buildingId}
+          AND r.building_id = #{buildingId}
         </if>
         <if test="unitId != null">
-          AND unit_id = #{unitId}
+          AND r.unit_id = #{unitId}
         </if>
         <if test="floorNo != null">
-          AND floor_no = #{floorNo}
+          AND r.floor_no = #{floorNo}
         </if>
         <if test="roomNo != null and roomNo != ''">
-          AND room_no LIKE CONCAT('%', #{roomNo}, '%')
+          AND r.room_no LIKE CONCAT('%', #{roomNo}, '%')
         </if>
         <if test="status != null">
-          AND status = #{status}
+          AND r.status = #{status}
         </if>
-        ORDER BY building_id ASC, unit_id ASC, floor_no ASC, room_no ASC
+        ORDER BY r.building_id ASC, r.unit_id ASC, r.floor_no ASC, r.room_no ASC
     </select>
 </mapper>

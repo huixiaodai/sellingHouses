@@ -32,10 +32,26 @@ public interface NoticeService {
     NoticeVO detail(IdDTO idDTO);
 
     /**
+     * 管理员查询公告详情。
+     *
+     * @param idDTO 公告ID请求
+     * @return 公告详情
+     */
+    NoticeVO adminDetail(IdDTO idDTO);
+
+    /**
      * 分页查询当前用户可见公告。
      *
      * @param queryDTO 分页查询请求
      * @return 公告分页
      */
     PageResult<NoticeVO> page(NoticePageQueryDTO queryDTO);
+
+    /**
+     * 管理员分页查询全部已发布公告。
+     *
+     * @param queryDTO 分页查询请求
+     * @return 公告分页
+     */
+    PageResult<NoticeVO> adminPage(NoticePageQueryDTO queryDTO);
 }

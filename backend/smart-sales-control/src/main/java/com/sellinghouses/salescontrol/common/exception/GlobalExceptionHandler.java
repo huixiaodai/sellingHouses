@@ -8,6 +8,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,6 +48,12 @@ public class GlobalExceptionHandler {
                 .map(violation -> violation.getMessage())
                 .orElse(ErrorCode.BAD_REQUEST.getMessage());
         return Result.fail(ErrorCode.BAD_REQUEST, message);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletResponse response) {
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
+        return Result.fail(ErrorCode.BAD_REQUEST, "上传文件过大，单张图片不能超过5MB");
     }
 
     @ExceptionHandler(Exception.class)

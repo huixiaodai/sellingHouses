@@ -2,6 +2,7 @@ package com.sellinghouses.salescontrol.module.appointment.mapper;
 
 import com.sellinghouses.salescontrol.module.appointment.dto.AdminAppointmentPageQueryDTO;
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentPageQueryDTO;
+import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentQueryDTO;
 import com.sellinghouses.salescontrol.module.appointment.entity.Appointment;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,5 +24,5 @@ public interface AppointmentMapper {
 
     List<Appointment> selectSalesPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("salesUserId") Long salesUserId);
 
-    List<Appointment> selectAdminPage(AdminAppointmentPageQueryDTO queryDTO);
+    List<AppointmentQueryDTO> selectAdminPage(AdminAppointmentPageQueryDTO queryDTO);
 }

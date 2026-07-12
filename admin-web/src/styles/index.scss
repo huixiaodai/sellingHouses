@@ -1,0 +1,70 @@
+:root {
+  --admin-primary: #1d66f2;
+  --admin-primary-dark: #1248b8;
+  --admin-bg: #f5f7fb;
+  --admin-surface: #ffffff;
+  --admin-text: #1f2937;
+  --admin-muted: #64748b;
+  --admin-border: #e5e7eb;
+  --admin-radius: 8px;
+  --admin-shadow: 0 10px 30px rgb(15 23 42 / 8%);
+  color: var(--admin-text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--admin-bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-card {
+  padding: 18px;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  box-shadow: var(--admin-shadow);
+}
+
+.table-card {
+  margin-top: 14px;
+  padding: 16px;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+
+.form-grid .el-form-item--large {
+  margin-bottom: 18px;
+}
+
+.full-row {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

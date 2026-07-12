@@ -67,12 +67,34 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    public NoticeVO adminDetail(IdDTO idDTO) {
+        requireAdmin();
+        Notice notice = noticeMapper.selectPublishedById(idDTO.getId());
+        if (notice == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "公告不存在");
+        }
+        return toVO(notice);
+    }
+
+    @Override
     public PageResult<NoticeVO> page(NoticePageQueryDTO queryDTO) {
         LoginUserContext loginUser = LoginUserHolder.getRequired();
         int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
         int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
         PageHelper.startPage(pageNo, pageSize);
-        List<Notice> notices = noticeMapper.selectVisiblePage(loginUser.getRoleCode());
+        List<Notice> notices = noticeMapper.selectVisiblePage(loginUser.getRoleCode(), queryDTO.getTitle());
+        PageInfo<Notice> pageInfo = new PageInfo<>(notices);
+        List<NoticeVO> records = notices.stream().map(this::toVO).toList();
+        return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
+    }
+
+    @Override
+    public PageResult<NoticeVO> adminPage(NoticePageQueryDTO queryDTO) {
+        requireAdmin();
+        int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
+        int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
+        PageHelper.startPage(pageNo, pageSize);
+        List<Notice> notices = noticeMapper.selectPublishedPage(queryDTO.getTitle());
         PageInfo<Notice> pageInfo = new PageInfo<>(notices);
         List<NoticeVO> records = notices.stream().map(this::toVO).toList();
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());

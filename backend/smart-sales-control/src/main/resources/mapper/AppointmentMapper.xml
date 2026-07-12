@@ -21,6 +21,24 @@
         <result column="update_user" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="AppointmentQueryResultMap" type="com.sellinghouses.salescontrol.module.appointment.dto.AppointmentQueryDTO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="sales_user_id" property="salesUserId"/>
+        <result column="sales_name" property="salesName"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="building_name" property="buildingName"/>
+        <result column="room_id" property="roomId"/>
+        <result column="room_no" property="roomNo"/>
+        <result column="appointment_time" property="appointmentTime"/>
+        <result column="contact_name" property="contactName"/>
+        <result column="contact_phone" property="contactPhone"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="cancel_reason" property="cancelReason"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
     <sql id="AppointmentColumns">
         id,
         user_id,
@@ -117,20 +135,37 @@
         ORDER BY appointment_time DESC, id DESC
     </select>
 
-    <select id="selectAdminPage" resultMap="AppointmentResultMap">
+    <select id="selectAdminPage" resultMap="AppointmentQueryResultMap">
         SELECT
-        <include refid="AppointmentColumns"/>
-        FROM appointment
+            a.id,
+            a.user_id,
+            a.sales_user_id,
+            COALESCE(s.real_name, s.username) AS sales_name,
+            a.building_id,
+            b.name AS building_name,
+            a.room_id,
+            r.room_no,
+            a.appointment_time,
+            a.contact_name,
+            a.contact_phone,
+            a.remark,
+            a.status,
+            a.cancel_reason,
+            a.create_time
+        FROM appointment a
+        LEFT JOIN building b ON a.building_id = b.id AND b.deleted = 0
+        LEFT JOIN room r ON a.room_id = r.id
+        LEFT JOIN `user` s ON a.sales_user_id = s.id
         WHERE 1 = 1
         <if test="estateId != null">
-          AND building_id = #{estateId}
+          AND a.building_id = #{estateId}
         </if>
         <if test="salesUserId != null">
-          AND sales_user_id = #{salesUserId}
+          AND a.sales_user_id = #{salesUserId}
         </if>
         <if test="status != null">
-          AND status = #{status}
+          AND a.status = #{status}
         </if>
-        ORDER BY appointment_time DESC, id DESC
+        ORDER BY a.appointment_time DESC, a.id DESC
     </select>
 </mapper>

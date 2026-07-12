@@ -16,6 +16,9 @@ public class BuildingUnitVO {
     @Schema(description = "楼盘ID")
     private final Long buildingId;
 
+    @Schema(description = "楼盘名称")
+    private final String buildingName;
+
     @Schema(description = "楼栋名称")
     private final String name;
 

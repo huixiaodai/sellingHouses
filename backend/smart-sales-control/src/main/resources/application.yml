@@ -12,6 +12,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:5MB}
+      max-request-size: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:30MB}
 
 mybatis:
   mapper-locations: classpath*:mapper/**/*.xml
@@ -32,3 +36,13 @@ knife4j:
 jwt:
   secret: selling-houses-smart-sales-control-secret-2026
   expiration-minutes: 180
+
+aliyun:
+  oss:
+    endpoint: ${ALIYUN_OSS_ENDPOINT:}
+    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}
+    bucket-name: ${ALIYUN_OSS_BUCKET_NAME:}
+    public-url-prefix: ${ALIYUN_OSS_PUBLIC_URL_PREFIX:}
+    upload-dir: ${ALIYUN_OSS_UPLOAD_DIR:selling-houses}
+    max-size-mb: ${ALIYUN_OSS_MAX_SIZE_MB:5}

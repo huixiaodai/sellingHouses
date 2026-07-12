@@ -80,6 +80,29 @@
         FROM notice
         WHERE status = 1
           AND (target_role = 'ALL' OR target_role = #{roleCode})
+        <if test="title != null and title != ''">
+          AND title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        ORDER BY publish_time DESC, id DESC
+    </select>
+
+    <select id="selectPublishedById" resultMap="NoticeResultMap">
+        SELECT
+        <include refid="NoticeColumns"/>
+        FROM notice
+        WHERE id = #{id}
+          AND status = 1
+        LIMIT 1
+    </select>
+
+    <select id="selectPublishedPage" resultMap="NoticeResultMap">
+        SELECT
+        <include refid="NoticeColumns"/>
+        FROM notice
+        WHERE status = 1
+        <if test="title != null and title != ''">
+          AND title LIKE CONCAT('%', #{title}, '%')
+        </if>
         ORDER BY publish_time DESC, id DESC
     </select>
 </mapper>

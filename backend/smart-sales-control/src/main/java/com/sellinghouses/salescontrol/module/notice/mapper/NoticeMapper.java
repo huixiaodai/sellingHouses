@@ -16,5 +16,9 @@ public interface NoticeMapper {
 
     Notice selectVisibleById(@Param("id") Long id, @Param("roleCode") String roleCode);
 
-    List<Notice> selectVisiblePage(@Param("roleCode") String roleCode);
+    Notice selectPublishedById(@Param("id") Long id);
+
+    List<Notice> selectVisiblePage(@Param("roleCode") String roleCode, @Param("title") String title);
+
+    List<Notice> selectPublishedPage(@Param("title") String title);
 }

@@ -10,6 +10,9 @@ import lombok.Setter;
 @Schema(description = "公告分页查询请求")
 public class NoticePageQueryDTO {
 
+    @Schema(description = "公告标题")
+    private String title;
+
     @Min(value = 1, message = "页码必须大于0")
     @Schema(description = "页码")
     private Integer pageNo = 1;

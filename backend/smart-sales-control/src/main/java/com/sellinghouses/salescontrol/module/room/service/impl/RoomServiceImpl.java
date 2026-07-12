@@ -16,6 +16,7 @@ import com.sellinghouses.salescontrol.module.building.mapper.BuildingUnitMapper;
 import com.sellinghouses.salescontrol.module.room.dto.RoomAddDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPageQueryDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPriceUpdateDTO;
+import com.sellinghouses.salescontrol.module.room.dto.RoomQueryDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.entity.Room;
@@ -46,8 +47,8 @@ public class RoomServiceImpl implements RoomService {
         checkRoomNoUnique(addDTO.getUnitId(), addDTO.getRoomNo(), null);
         Room room = new Room();
         fillRoom(room, addDTO.getBuildingId(), addDTO.getUnitId(), addDTO.getRoomNo(), addDTO.getFloorNo(),
-                addDTO.getArea(), addDTO.getPrice(), addDTO.getLayout(), addDTO.getOrientation(),
-                addDTO.getDecoration(), addDTO.getStatus(), addDTO.getRemark());
+                addDTO.getArea(), addDTO.getPrice(), addDTO.getCover(), addDTO.getImages(), addDTO.getLayout(),
+                addDTO.getOrientation(), addDTO.getDecoration(), addDTO.getStatus(), addDTO.getRemark());
         room.setCreateUser(loginUser.getUserId());
         room.setUpdateUser(loginUser.getUserId());
         roomMapper.insert(room);
@@ -65,8 +66,9 @@ public class RoomServiceImpl implements RoomService {
         Room room = new Room();
         room.setId(updateDTO.getId());
         fillRoom(room, updateDTO.getBuildingId(), updateDTO.getUnitId(), updateDTO.getRoomNo(), updateDTO.getFloorNo(),
-                updateDTO.getArea(), updateDTO.getPrice(), updateDTO.getLayout(), updateDTO.getOrientation(),
-                updateDTO.getDecoration(), updateDTO.getStatus(), updateDTO.getRemark());
+                updateDTO.getArea(), updateDTO.getPrice(), updateDTO.getCover(), updateDTO.getImages(),
+                updateDTO.getLayout(), updateDTO.getOrientation(), updateDTO.getDecoration(), updateDTO.getStatus(),
+                updateDTO.getRemark());
         room.setUpdateUser(loginUser.getUserId());
         roomMapper.updateById(room);
     }
@@ -99,7 +101,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomVO detail(IdDTO idDTO) {
         requireAdmin();
-        return toVO(requireRoom(idDTO.getId()));
+        RoomQueryDTO room = roomMapper.selectDetailById(idDTO.getId());
+        if (room == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "鎴挎簮涓嶅瓨鍦?");
+        }
+        return toVO(room);
     }
 
     @Override
@@ -111,21 +117,23 @@ public class RoomServiceImpl implements RoomService {
         int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
         int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
         PageHelper.startPage(pageNo, pageSize);
-        List<Room> rooms = roomMapper.selectPage(queryDTO);
-        PageInfo<Room> pageInfo = new PageInfo<>(rooms);
+        List<RoomQueryDTO> rooms = roomMapper.selectPage(queryDTO);
+        PageInfo<RoomQueryDTO> pageInfo = new PageInfo<>(rooms);
         List<RoomVO> records = rooms.stream().map(this::toVO).toList();
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
 
     private void fillRoom(Room room, Long buildingId, Long unitId, String roomNo, Integer floorNo,
-                          java.math.BigDecimal area, java.math.BigDecimal price, String layout,
-                          String orientation, String decoration, Integer status, String remark) {
+                          java.math.BigDecimal area, java.math.BigDecimal price, String cover, String images,
+                          String layout, String orientation, String decoration, Integer status, String remark) {
         room.setBuildingId(buildingId);
         room.setUnitId(unitId);
         room.setRoomNo(roomNo);
         room.setFloorNo(floorNo);
         room.setArea(area);
         room.setPrice(price);
+        room.setCover(cover);
+        room.setImages(images);
         room.setLayout(layout);
         room.setOrientation(orientation);
         room.setDecoration(decoration);
@@ -177,6 +185,30 @@ public class RoomServiceImpl implements RoomService {
                 .floorNo(room.getFloorNo())
                 .area(room.getArea())
                 .price(room.getPrice())
+                .cover(room.getCover())
+                .images(room.getImages())
+                .layout(room.getLayout())
+                .orientation(room.getOrientation())
+                .decoration(room.getDecoration())
+                .status(room.getStatus())
+                .remark(room.getRemark())
+                .createTime(room.getCreateTime())
+                .build();
+    }
+
+    private RoomVO toVO(RoomQueryDTO room) {
+        return RoomVO.builder()
+                .id(room.getId())
+                .buildingId(room.getBuildingId())
+                .buildingName(room.getBuildingName())
+                .unitId(room.getUnitId())
+                .unitName(room.getUnitName())
+                .roomNo(room.getRoomNo())
+                .floorNo(room.getFloorNo())
+                .area(room.getArea())
+                .price(room.getPrice())
+                .cover(room.getCover())
+                .images(room.getImages())
                 .layout(room.getLayout())
                 .orientation(room.getOrientation())
                 .decoration(room.getDecoration())

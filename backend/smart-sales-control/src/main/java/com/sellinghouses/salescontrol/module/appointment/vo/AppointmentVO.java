@@ -7,42 +7,54 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@Schema(description = "预约响应")
+@Schema(description = "Appointment response")
 public class AppointmentVO {
 
-    @Schema(description = "预约ID")
+    @Schema(description = "Appointment ID")
     private final Long id;
 
-    @Schema(description = "购房用户ID")
+    @Schema(description = "Customer user ID")
     private final Long userId;
 
-    @Schema(description = "销售ID")
+    @Schema(description = "Sales user ID")
     private final Long salesUserId;
 
-    @Schema(description = "楼盘ID")
+    @Schema(description = "Sales name")
+    private final String salesName;
+
+    @Schema(description = "Building ID")
     private final Long estateId;
 
-    @Schema(description = "房源ID")
+    @Schema(description = "Building ID")
+    private final Long buildingId;
+
+    @Schema(description = "Building name")
+    private final String buildingName;
+
+    @Schema(description = "Room ID")
     private final Long roomId;
 
-    @Schema(description = "预约时间")
+    @Schema(description = "Room number")
+    private final String roomNo;
+
+    @Schema(description = "Appointment time")
     private final LocalDateTime appointmentTime;
 
-    @Schema(description = "联系人")
+    @Schema(description = "Contact name")
     private final String contactName;
 
-    @Schema(description = "联系电话")
+    @Schema(description = "Contact phone")
     private final String contactPhone;
 
-    @Schema(description = "备注")
+    @Schema(description = "Remark")
     private final String remark;
 
-    @Schema(description = "预约状态")
+    @Schema(description = "Appointment status")
     private final Integer status;
 
-    @Schema(description = "取消原因")
+    @Schema(description = "Cancel reason")
     private final String cancelReason;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "Create time")
     private final LocalDateTime createTime;
 }

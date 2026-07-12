@@ -1,6 +1,7 @@
 package com.sellinghouses.salescontrol.module.building.mapper;
 
 import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitPageQueryDTO;
+import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitQueryDTO;
 import com.sellinghouses.salescontrol.module.building.entity.BuildingUnit;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,7 +24,7 @@ public interface BuildingUnitMapper {
 
     int countByBuildingId(@Param("buildingId") Long buildingId);
 
-    List<BuildingUnit> selectPage(BuildingUnitPageQueryDTO queryDTO);
+    List<BuildingUnitQueryDTO> selectPage(BuildingUnitPageQueryDTO queryDTO);
 
-    List<BuildingUnit> selectByBuildingId(@Param("buildingId") Long buildingId);
+    List<BuildingUnitQueryDTO> selectByBuildingId(@Param("buildingId") Long buildingId);
 }

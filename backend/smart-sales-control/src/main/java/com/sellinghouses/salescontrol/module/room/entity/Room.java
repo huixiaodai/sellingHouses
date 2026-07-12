@@ -23,6 +23,10 @@ public class Room {
 
     private BigDecimal price;
 
+    private String cover;
+
+    private String images;
+
     private String layout;
 
     private String orientation;

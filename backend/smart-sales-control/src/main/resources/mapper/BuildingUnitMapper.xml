@@ -16,6 +16,16 @@
         <result column="update_user" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="BuildingUnitQueryResultMap" type="com.sellinghouses.salescontrol.module.building.dto.BuildingUnitQueryDTO">
+        <id column="id" property="id"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="building_name" property="buildingName"/>
+        <result column="name" property="name"/>
+        <result column="sort_no" property="sortNo"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
     <sql id="BuildingUnitColumns">
         id,
         building_id,
@@ -104,29 +114,43 @@
           AND deleted = 0
     </select>
 
-    <select id="selectPage" resultMap="BuildingUnitResultMap">
+    <select id="selectPage" resultMap="BuildingUnitQueryResultMap">
         SELECT
-        <include refid="BuildingUnitColumns"/>
-        FROM building_unit
-        WHERE deleted = 0
+            bu.id,
+            bu.building_id,
+            b.name AS building_name,
+            bu.name,
+            bu.sort_no,
+            bu.status,
+            bu.create_time
+        FROM building_unit bu
+        INNER JOIN building b ON bu.building_id = b.id AND b.deleted = 0
+        WHERE bu.deleted = 0
         <if test="buildingId != null">
-          AND building_id = #{buildingId}
+          AND bu.building_id = #{buildingId}
         </if>
         <if test="name != null and name != ''">
-          AND name LIKE CONCAT('%', #{name}, '%')
+          AND bu.name LIKE CONCAT('%', #{name}, '%')
         </if>
         <if test="status != null">
-          AND status = #{status}
+          AND bu.status = #{status}
         </if>
-        ORDER BY sort_no ASC, id ASC
+        ORDER BY bu.sort_no ASC, bu.id ASC
     </select>
 
-    <select id="selectByBuildingId" resultMap="BuildingUnitResultMap">
+    <select id="selectByBuildingId" resultMap="BuildingUnitQueryResultMap">
         SELECT
-        <include refid="BuildingUnitColumns"/>
-        FROM building_unit
-        WHERE building_id = #{buildingId}
-          AND deleted = 0
-        ORDER BY sort_no ASC, id ASC
+            bu.id,
+            bu.building_id,
+            b.name AS building_name,
+            bu.name,
+            bu.sort_no,
+            bu.status,
+            bu.create_time
+        FROM building_unit bu
+        INNER JOIN building b ON bu.building_id = b.id AND b.deleted = 0
+        WHERE bu.building_id = #{buildingId}
+          AND bu.deleted = 0
+        ORDER BY bu.sort_no ASC, bu.id ASC
     </select>
 </mapper>

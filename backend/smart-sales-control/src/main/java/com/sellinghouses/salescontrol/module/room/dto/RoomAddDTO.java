@@ -41,6 +41,12 @@ public class RoomAddDTO {
     @Schema(description = "价格", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal price;
 
+    @Schema(description = "封面图")
+    private String cover;
+
+    @Schema(description = "房源图库JSON数组")
+    private String images;
+
     @Schema(description = "户型")
     private String layout;
 

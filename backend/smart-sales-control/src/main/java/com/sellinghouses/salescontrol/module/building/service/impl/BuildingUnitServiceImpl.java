@@ -12,6 +12,7 @@ import com.sellinghouses.salescontrol.common.exception.ErrorCode;
 import com.sellinghouses.salescontrol.common.result.PageResult;
 import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitAddDTO;
 import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitPageQueryDTO;
+import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitQueryDTO;
 import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.building.dto.BuildingUnitUpdateDTO;
 import com.sellinghouses.salescontrol.module.building.entity.BuildingUnit;
@@ -97,8 +98,8 @@ public class BuildingUnitServiceImpl implements BuildingUnitService {
         int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
         int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
         PageHelper.startPage(pageNo, pageSize);
-        List<BuildingUnit> units = buildingUnitMapper.selectPage(queryDTO);
-        PageInfo<BuildingUnit> pageInfo = new PageInfo<>(units);
+        List<BuildingUnitQueryDTO> units = buildingUnitMapper.selectPage(queryDTO);
+        PageInfo<BuildingUnitQueryDTO> pageInfo = new PageInfo<>(units);
         List<BuildingUnitVO> records = units.stream().map(this::toVO).toList();
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
@@ -138,10 +139,11 @@ public class BuildingUnitServiceImpl implements BuildingUnitService {
         return loginUser;
     }
 
-    private BuildingUnitVO toVO(BuildingUnit unit) {
+    private BuildingUnitVO toVO(BuildingUnitQueryDTO unit) {
         return BuildingUnitVO.builder()
                 .id(unit.getId())
                 .buildingId(unit.getBuildingId())
+                .buildingName(unit.getBuildingName())
                 .name(unit.getName())
                 .sortNo(unit.getSortNo())
                 .status(unit.getStatus())

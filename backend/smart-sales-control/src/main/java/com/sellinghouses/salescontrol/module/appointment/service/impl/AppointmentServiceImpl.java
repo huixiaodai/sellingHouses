@@ -13,6 +13,7 @@ import com.sellinghouses.salescontrol.module.appointment.dto.AdminAppointmentPag
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentCancelDTO;
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentCreateDTO;
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentPageQueryDTO;
+import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentQueryDTO;
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.appointment.entity.Appointment;
 import com.sellinghouses.salescontrol.module.appointment.mapper.AppointmentMapper;
@@ -104,8 +105,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
         int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
         PageHelper.startPage(pageNo, pageSize);
-        List<Appointment> appointments = appointmentMapper.selectAdminPage(queryDTO);
-        PageInfo<Appointment> pageInfo = new PageInfo<>(appointments);
+        List<AppointmentQueryDTO> appointments = appointmentMapper.selectAdminPage(queryDTO);
+        PageInfo<AppointmentQueryDTO> pageInfo = new PageInfo<>(appointments);
         List<AppointmentVO> records = appointments.stream().map(this::toVO).toList();
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
@@ -201,6 +202,27 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .salesUserId(appointment.getSalesUserId())
                 .estateId(appointment.getBuildingId())
                 .roomId(appointment.getRoomId())
+                .appointmentTime(appointment.getAppointmentTime())
+                .contactName(appointment.getContactName())
+                .contactPhone(appointment.getContactPhone())
+                .remark(appointment.getRemark())
+                .status(appointment.getStatus())
+                .cancelReason(appointment.getCancelReason())
+                .createTime(appointment.getCreateTime())
+                .build();
+    }
+
+    private AppointmentVO toVO(AppointmentQueryDTO appointment) {
+        return AppointmentVO.builder()
+                .id(appointment.getId())
+                .userId(appointment.getUserId())
+                .salesUserId(appointment.getSalesUserId())
+                .salesName(appointment.getSalesName())
+                .estateId(appointment.getBuildingId())
+                .buildingId(appointment.getBuildingId())
+                .buildingName(appointment.getBuildingName())
+                .roomId(appointment.getRoomId())
+                .roomNo(appointment.getRoomNo())
                 .appointmentTime(appointment.getAppointmentTime())
                 .contactName(appointment.getContactName())
                 .contactPhone(appointment.getContactPhone())
