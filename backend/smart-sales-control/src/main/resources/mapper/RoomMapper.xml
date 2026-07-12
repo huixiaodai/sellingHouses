@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sellinghouses.salescontrol.module.room.mapper.RoomMapper">
+
+    <resultMap id="RoomResultMap" type="com.sellinghouses.salescontrol.module.room.entity.Room">
+        <id column="id" property="id"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="unit_id" property="unitId"/>
+        <result column="room_no" property="roomNo"/>
+        <result column="floor_no" property="floorNo"/>
+        <result column="area" property="area"/>
+        <result column="price" property="price"/>
+        <result column="layout" property="layout"/>
+        <result column="orientation" property="orientation"/>
+        <result column="decoration" property="decoration"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <sql id="RoomColumns">
+        id,
+        building_id,
+        unit_id,
+        room_no,
+        floor_no,
+        area,
+        price,
+        layout,
+        orientation,
+        decoration,
+        status,
+        remark,
+        deleted,
+        create_time,
+        update_time,
+        create_user,
+        update_user
+    </sql>
+
+    <insert id="insert" parameterType="com.sellinghouses.salescontrol.module.room.entity.Room" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO room (
+            building_id,
+            unit_id,
+            room_no,
+            floor_no,
+            area,
+            price,
+            layout,
+            orientation,
+            decoration,
+            status,
+            remark,
+            create_user,
+            update_user
+        ) VALUES (
+            #{buildingId},
+            #{unitId},
+            #{roomNo},
+            #{floorNo},
+            #{area},
+            #{price},
+            #{layout},
+            #{orientation},
+            #{decoration},
+            #{status},
+            #{remark},
+            #{createUser},
+            #{updateUser}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.sellinghouses.salescontrol.module.room.entity.Room">
+        UPDATE room
+        SET building_id = #{buildingId},
+            unit_id = #{unitId},
+            room_no = #{roomNo},
+            floor_no = #{floorNo},
+            area = #{area},
+            price = #{price},
+            layout = #{layout},
+            orientation = #{orientation},
+            decoration = #{decoration},
+            status = #{status},
+            remark = #{remark},
+            update_user = #{updateUser},
+            update_time = NOW()
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
+
+    <update id="updatePrice">
+        UPDATE room
+        SET price = #{price},
+            update_user = #{updateUser},
+            update_time = NOW()
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
+
+    <update id="updateStatus">
+        UPDATE room
+        SET status = #{status},
+            update_user = #{updateUser},
+            update_time = NOW()
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
+
+    <update id="logicalDelete">
+        UPDATE room
+        SET deleted = 1,
+            update_user = #{updateUser},
+            update_time = NOW()
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
+
+    <select id="selectById" resultMap="RoomResultMap">
+        SELECT
+        <include refid="RoomColumns"/>
+        FROM room
+        WHERE id = #{id}
+          AND deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="countByRoomNo" resultType="int">
+        SELECT COUNT(1)
+        FROM room
+        WHERE unit_id = #{unitId}
+          AND room_no = #{roomNo}
+          AND deleted = 0
+        <if test="excludeId != null">
+          AND id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="countByUnitId" resultType="int">
+        SELECT COUNT(1)
+        FROM room
+        WHERE unit_id = #{unitId}
+          AND deleted = 0
+    </select>
+
+    <select id="selectPage" resultMap="RoomResultMap">
+        SELECT
+        <include refid="RoomColumns"/>
+        FROM room
+        WHERE deleted = 0
+        <if test="buildingId != null">
+          AND building_id = #{buildingId}
+        </if>
+        <if test="unitId != null">
+          AND unit_id = #{unitId}
+        </if>
+        <if test="floorNo != null">
+          AND floor_no = #{floorNo}
+        </if>
+        <if test="roomNo != null and roomNo != ''">
+          AND room_no LIKE CONCAT('%', #{roomNo}, '%')
+        </if>
+        <if test="status != null">
+          AND status = #{status}
+        </if>
+        ORDER BY building_id ASC, unit_id ASC, floor_no ASC, room_no ASC
+    </select>
+</mapper>

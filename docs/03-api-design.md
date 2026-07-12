@@ -178,85 +178,6 @@
 
 ### 3.1 新增楼盘
 
-- URL：`POST /api/admin/estate/create`
-- 权限：超级管理员
-
-请求参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `name` | String | 是 | 楼盘名称 |
-| `city` | String | 是 | 城市 |
-| `district` | String | 否 | 区域 |
-| `address` | String | 是 | 详细地址 |
-| `developer` | String | 否 | 开发商 |
-| `saleOfficePhone` | String | 否 | 售楼处电话 |
-| `coverImage` | String | 否 | 封面图 |
-| `description` | String | 否 | 楼盘简介 |
-| `status` | Integer | 是 | 状态：1在售，2待售，3售罄，4下架 |
-
-响应数据：`id`
-
-### 3.2 修改楼盘
-
-- URL：`POST /api/admin/estate/update`
-- 权限：超级管理员
-
-请求参数：同新增楼盘，额外包含：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 楼盘ID |
-
-响应数据：`null`
-
-### 3.3 删除楼盘
-
-- URL：`POST /api/admin/estate/delete`
-- 权限：超级管理员
-
-请求参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 楼盘ID |
-
-响应数据：`null`
-
-### 3.4 楼盘列表
-
-- URL：`GET /api/estate/page`
-- 权限：登录用户
-
-查询参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `pageNo` | Integer | 否 | 页码，默认1 |
-| `pageSize` | Integer | 否 | 每页条数，默认10 |
-| `keyword` | String | 否 | 楼盘名称关键字 |
-| `city` | String | 否 | 城市 |
-| `status` | Integer | 否 | 楼盘状态 |
-
-响应数据：`PageResult<EstateListVO>`
-
-### 3.5 楼盘详情
-
-- URL：`GET /api/estate/detail`
-- 权限：登录用户
-
-查询参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 楼盘ID |
-
-响应数据：`EstateDetailVO`
-
-## 4. 楼栋与单元模块
-
-### 4.1 新增楼栋
-
 - URL：`POST /api/admin/building/create`
 - 权限：超级管理员
 
@@ -264,28 +185,65 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `estateId` | Long | 是 | 楼盘ID |
-| `name` | String | 是 | 楼栋名称 |
-| `buildingNo` | String | 是 | 楼栋编号 |
-| `floorCount` | Integer | 是 | 总楼层 |
-| `unitCount` | Integer | 是 | 单元数量 |
+| `name` | String | 是 | 楼盘名称 |
+| `cover` | String | 否 | 封面图 |
+| `bannerImages` | String | 否 | 轮播图JSON数组 |
+| `developer` | String | 否 | 开发商 |
+| `address` | String | 是 | 楼盘地址 |
+| `description` | String | 否 | 楼盘介绍 |
+| `openingTime` | LocalDateTime | 否 | 开盘时间 |
+| `deliveryTime` | LocalDateTime | 否 | 交房时间 |
+| `status` | Integer | 否 | 状态：1启用，0禁用 |
 
 响应数据：`id`
 
-### 4.2 楼栋列表
+### 3.2 修改楼盘
 
-- URL：`GET /api/building/list`
-- 权限：登录用户
+- URL：`POST /api/admin/building/update`
+- 权限：超级管理员
+- 请求参数：同新增楼盘，额外包含 `id`
+- 响应数据：`null`
+
+### 3.3 删除楼盘
+
+- URL：`POST /api/admin/building/delete`
+- 权限：超级管理员
+- 请求参数：`IdDTO`
+- 响应数据：`null`
+
+### 3.4 修改楼盘状态
+
+- URL：`POST /api/admin/building/update-status`
+- 权限：超级管理员
+- 请求参数：`id`、`status`
+- 响应数据：`null`
+
+### 3.5 楼盘详情
+
+- URL：`GET /api/admin/building/detail`
+- 权限：超级管理员
+- 查询参数：`id`
+- 响应数据：`BuildingVO`
+
+### 3.6 楼盘分页
+
+- URL：`GET /api/admin/building/page`
+- 权限：超级管理员
 
 查询参数：
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `estateId` | Long | 是 | 楼盘ID |
+| `pageNo` | Integer | 否 | 页码，默认1 |
+| `pageSize` | Integer | 否 | 每页条数，默认10 |
+| `name` | String | 否 | 楼盘名称 |
+| `status` | Integer | 否 | 状态：1启用，0禁用 |
 
-响应数据：`List<BuildingListVO>`
+响应数据：`PageResult<BuildingVO>`
 
-### 4.3 新增单元
+## 4. 楼栋模块
+
+### 4.1 新增楼栋
 
 - URL：`POST /api/admin/building-unit/create`
 - 权限：超级管理员
@@ -294,26 +252,47 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `buildingId` | Long | 是 | 楼栋ID |
-| `unitName` | String | 是 | 单元名称 |
-| `unitNo` | String | 是 | 单元编号 |
-| `floorCount` | Integer | 是 | 单元楼层数 |
-| `roomCountPerFloor` | Integer | 是 | 每层房源数 |
+| `buildingId` | Long | 是 | 楼盘ID |
+| `name` | String | 是 | 楼栋名称 |
+| `sortNo` | Integer | 否 | 排序号 |
+| `status` | Integer | 否 | 状态：1启用，0禁用 |
 
 响应数据：`id`
 
-### 4.4 单元列表
+### 4.2 修改楼栋
 
-- URL：`GET /api/building-unit/list`
-- 权限：登录用户
+- URL：`POST /api/admin/building-unit/update`
+- 权限：超级管理员
+- 请求参数：同新增楼栋，额外包含 `id`
+- 响应数据：`null`
 
-查询参数：
+### 4.3 删除楼栋
 
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `buildingId` | Long | 是 | 楼栋ID |
+- URL：`POST /api/admin/building-unit/delete`
+- 权限：超级管理员
+- 请求参数：`IdDTO`
+- 响应数据：`null`
 
-响应数据：`List<BuildingUnitVO>`
+### 4.4 修改楼栋状态
+
+- URL：`POST /api/admin/building-unit/update-status`
+- 权限：超级管理员
+- 请求参数：`id`、`status`
+- 响应数据：`null`
+
+### 4.5 楼栋分页
+
+- URL：`GET /api/admin/building-unit/page`
+- 权限：超级管理员
+- 查询参数：`pageNo`、`pageSize`、`buildingId`、`name`、`status`
+- 响应数据：`PageResult<BuildingUnitVO>`
+
+### 4.6 根据楼盘查询楼栋
+
+- URL：`GET /api/admin/building-unit/list-by-building`
+- 权限：超级管理员
+- 查询参数：`buildingId`
+- 响应数据：`List<BuildingUnitVO>`
 
 ## 5. 房源模块
 
@@ -326,19 +305,17 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `estateId` | Long | 是 | 楼盘ID |
-| `buildingId` | Long | 是 | 楼栋ID |
-| `unitId` | Long | 是 | 单元ID |
+| `buildingId` | Long | 是 | 楼盘ID |
+| `unitId` | Long | 是 | 楼栋ID |
 | `roomNo` | String | 是 | 房号 |
 | `floorNo` | Integer | 是 | 楼层 |
-| `houseType` | String | 否 | 户型 |
+| `area` | BigDecimal | 是 | 面积 |
+| `price` | BigDecimal | 是 | 价格 |
+| `layout` | String | 否 | 户型 |
 | `orientation` | String | 否 | 朝向 |
-| `constructionArea` | BigDecimal | 是 | 建筑面积 |
-| `usableArea` | BigDecimal | 否 | 套内面积 |
-| `totalPrice` | BigDecimal | 是 | 总价 |
-| `unitPrice` | BigDecimal | 是 | 单价 |
-| `status` | Integer | 是 | 房源状态 |
-| `description` | String | 否 | 房源说明 |
+| `decoration` | String | 否 | 装修 |
+| `status` | Integer | 否 | 0待售，1已预订，2已售，3不可售 |
+| `remark` | String | 否 | 备注 |
 
 响应数据：`id`
 
@@ -346,104 +323,43 @@
 
 - URL：`POST /api/admin/room/update`
 - 权限：超级管理员
-
-请求参数：同新增房源，额外包含：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 房源ID |
-
-响应数据：`null`
+- 请求参数：同新增房源，额外包含 `id`
+- 响应数据：`null`
 
 ### 5.3 删除房源
 
 - URL：`POST /api/admin/room/delete`
 - 权限：超级管理员
+- 请求参数：`IdDTO`
+- 响应数据：`null`
 
-请求参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 房源ID |
-
-响应数据：`null`
-
-### 5.4 修改房源状态
-
-- URL：`POST /api/admin/room/update-status`
-- 权限：超级管理员
-- 说明：更新成功后触发 WebSocket 推送。
-
-请求参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `roomId` | Long | 是 | 房源ID |
-| `status` | Integer | 是 | 房源状态 |
-
-响应数据：`null`
-
-### 5.5 修改房源价格
+### 5.4 修改房源价格
 
 - URL：`POST /api/admin/room/update-price`
 - 权限：超级管理员
+- 请求参数：`id`、`price`
+- 响应数据：`null`
 
-请求参数：
+### 5.5 修改房源状态
 
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `roomId` | Long | 是 | 房源ID |
-| `totalPrice` | BigDecimal | 是 | 总价 |
-| `unitPrice` | BigDecimal | 是 | 单价 |
+- URL：`POST /api/admin/room/update-status`
+- 权限：超级管理员
+- 请求参数：`id`、`status`
+- 响应数据：`null`
 
-响应数据：`null`
+### 5.6 房源详情
 
-### 5.6 房源销控图
+- URL：`GET /api/admin/room/detail`
+- 权限：超级管理员
+- 查询参数：`id`
+- 响应数据：`RoomVO`
 
-- URL：`GET /api/room/sale-control`
-- 权限：登录用户
+### 5.7 房源分页
 
-查询参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `buildingId` | Long | 是 | 楼栋ID |
-| `unitId` | Long | 否 | 单元ID |
-
-响应数据：`List<RoomSaleControlVO>`
-
-### 5.7 房源详情
-
-- URL：`GET /api/room/detail`
-- 权限：登录用户
-
-查询参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `id` | Long | 是 | 房源ID |
-
-响应数据：`RoomDetailVO`
-
-### 5.8 房源搜索
-
-- URL：`GET /api/room/page`
-- 权限：登录用户
-
-查询参数：
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `pageNo` | Integer | 否 | 页码 |
-| `pageSize` | Integer | 否 | 每页条数 |
-| `estateId` | Long | 否 | 楼盘ID |
-| `buildingId` | Long | 否 | 楼栋ID |
-| `unitId` | Long | 否 | 单元ID |
-| `floorNo` | Integer | 否 | 楼层 |
-| `roomNo` | String | 否 | 房号 |
-| `status` | Integer | 否 | 房源状态 |
-
-响应数据：`PageResult<RoomDetailVO>`
+- URL：`GET /api/admin/room/page`
+- 权限：超级管理员
+- 查询参数：`pageNo`、`pageSize`、`buildingId`、`unitId`、`floorNo`、`roomNo`、`status`
+- 响应数据：`PageResult<RoomVO>`
 
 ## 6. 收藏模块
 

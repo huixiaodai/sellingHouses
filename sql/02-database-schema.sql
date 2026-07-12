@@ -62,79 +62,56 @@ CREATE TABLE IF NOT EXISTS user_role (
 CREATE TABLE IF NOT EXISTS building (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '楼盘ID',
     name VARCHAR(128) NOT NULL COMMENT '楼盘名称',
-    city VARCHAR(64) NOT NULL COMMENT '城市',
-    district VARCHAR(64) DEFAULT NULL COMMENT '区域',
+    cover VARCHAR(255) DEFAULT NULL COMMENT '封面图',
+    banner_images JSON DEFAULT NULL COMMENT '轮播图JSON数组',
     address VARCHAR(255) NOT NULL COMMENT '详细地址',
     developer VARCHAR(128) DEFAULT NULL COMMENT '开发商',
-    sale_office_phone VARCHAR(32) DEFAULT NULL COMMENT '售楼处电话',
-    cover_image VARCHAR(255) DEFAULT NULL COMMENT '封面图',
     description VARCHAR(1000) DEFAULT NULL COMMENT '楼盘简介',
-    status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1在售，2待售，3售罄，0下架',
+    opening_time DATETIME DEFAULT NULL COMMENT '开盘时间',
+    delivery_time DATETIME DEFAULT NULL COMMENT '交房时间',
+    status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1启用，0禁用',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除：0未删除，1已删除',
     ext_json JSON DEFAULT NULL COMMENT '扩展字段',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     create_user BIGINT DEFAULT NULL COMMENT '创建人ID',
     update_user BIGINT DEFAULT NULL COMMENT '更新人ID',
     PRIMARY KEY (id),
-    KEY idx_building_city_status (city, status),
-    KEY idx_building_name (name)
+    KEY idx_building_name (name),
+    KEY idx_building_status_deleted (status, deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='楼盘表';
 
-CREATE TABLE IF NOT EXISTS building_image (
-    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '楼盘图片ID',
+CREATE TABLE IF NOT EXISTS building_unit (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '楼栋ID',
     building_id BIGINT NOT NULL COMMENT '楼盘ID',
-    image_url VARCHAR(255) NOT NULL COMMENT '图片地址',
-    image_type TINYINT NOT NULL DEFAULT 1 COMMENT '图片类型：1效果图，2实景图，3户型图，4配套图',
+    name VARCHAR(64) NOT NULL COMMENT '楼栋名称',
     sort_no INT NOT NULL DEFAULT 0 COMMENT '排序号',
-    status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1启用，0禁用',
-    ext_json JSON DEFAULT NULL COMMENT '扩展字段',
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    create_user BIGINT DEFAULT NULL COMMENT '创建人ID',
-    update_user BIGINT DEFAULT NULL COMMENT '更新人ID',
-    PRIMARY KEY (id),
-    KEY idx_building_image_building (building_id, image_type, status),
-    CONSTRAINT fk_building_image_building FOREIGN KEY (building_id) REFERENCES building (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='楼盘图片表';
-
-CREATE TABLE IF NOT EXISTS unit (
-    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '楼栋/单元ID',
-    building_id BIGINT NOT NULL COMMENT '楼盘ID',
-    parent_id BIGINT DEFAULT NULL COMMENT '父级ID，楼栋为空，单元指向楼栋',
-    unit_type TINYINT NOT NULL COMMENT '节点类型：1楼栋，2单元',
-    name VARCHAR(64) NOT NULL COMMENT '名称',
-    unit_no VARCHAR(32) NOT NULL COMMENT '编号',
-    floor_count INT NOT NULL COMMENT '楼层数',
-    room_count_per_floor INT DEFAULT NULL COMMENT '每层房源数，单元节点使用',
     status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1启用，0停用',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除：0未删除，1已删除',
     ext_json JSON DEFAULT NULL COMMENT '扩展字段',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     create_user BIGINT DEFAULT NULL COMMENT '创建人ID',
     update_user BIGINT DEFAULT NULL COMMENT '更新人ID',
     PRIMARY KEY (id),
-    UNIQUE KEY uk_unit_building_parent_no (building_id, parent_id, unit_no),
-    KEY idx_unit_building_type (building_id, unit_type, status),
-    KEY idx_unit_parent_id (parent_id),
-    CONSTRAINT fk_unit_building FOREIGN KEY (building_id) REFERENCES building (id),
-    CONSTRAINT fk_unit_parent FOREIGN KEY (parent_id) REFERENCES unit (id)
+    UNIQUE KEY uk_building_unit_name (building_id, name, deleted),
+    KEY idx_building_unit_building (building_id, status, deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='楼栋单元表';
 
 CREATE TABLE IF NOT EXISTS room (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '房源ID',
     building_id BIGINT NOT NULL COMMENT '楼盘ID',
-    building_unit_id BIGINT NOT NULL COMMENT '楼栋ID，对应unit表楼栋节点',
-    unit_id BIGINT NOT NULL COMMENT '单元ID，对应unit表单元节点',
+    unit_id BIGINT NOT NULL COMMENT '楼栋ID',
     room_no VARCHAR(32) NOT NULL COMMENT '房号',
     floor_no INT NOT NULL COMMENT '楼层',
-    house_type VARCHAR(64) DEFAULT NULL COMMENT '户型',
+    area DECIMAL(10,2) NOT NULL COMMENT '面积',
+    price DECIMAL(14,2) NOT NULL COMMENT '价格',
+    layout VARCHAR(64) DEFAULT NULL COMMENT '户型',
     orientation VARCHAR(32) DEFAULT NULL COMMENT '朝向',
-    construction_area DECIMAL(10,2) NOT NULL COMMENT '建筑面积',
-    usable_area DECIMAL(10,2) DEFAULT NULL COMMENT '套内面积',
-    total_price DECIMAL(14,2) NOT NULL COMMENT '总价',
-    unit_price DECIMAL(12,2) NOT NULL COMMENT '单价',
-    status VARCHAR(32) NOT NULL DEFAULT 'AVAILABLE' COMMENT '房源状态：AVAILABLE待售，RESERVED已预订，SOLD已售，UNAVAILABLE不可售',
-    description VARCHAR(1000) DEFAULT NULL COMMENT '房源说明',
+    decoration VARCHAR(64) DEFAULT NULL COMMENT '装修',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0待售，1已预订，2已售，3不可售',
+    remark VARCHAR(500) DEFAULT NULL COMMENT '备注',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除：0未删除，1已删除',
     ext_json JSON DEFAULT NULL COMMENT '扩展字段',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -142,13 +119,9 @@ CREATE TABLE IF NOT EXISTS room (
     update_user BIGINT DEFAULT NULL COMMENT '更新人ID',
     PRIMARY KEY (id),
     UNIQUE KEY uk_room_unit_room_no (unit_id, room_no),
-    KEY idx_room_building_id (building_id),
-    KEY idx_room_building_floor (building_unit_id, floor_no),
-    KEY idx_room_status (status),
-    KEY idx_room_no (room_no),
-    CONSTRAINT fk_room_building FOREIGN KEY (building_id) REFERENCES building (id),
-    CONSTRAINT fk_room_building_unit FOREIGN KEY (building_unit_id) REFERENCES unit (id),
-    CONSTRAINT fk_room_unit FOREIGN KEY (unit_id) REFERENCES unit (id)
+    KEY idx_room_building (building_id, status, deleted),
+    KEY idx_room_unit_floor (unit_id, floor_no, deleted),
+    KEY idx_room_no (room_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='房源表';
 
 CREATE TABLE IF NOT EXISTS favorite (
