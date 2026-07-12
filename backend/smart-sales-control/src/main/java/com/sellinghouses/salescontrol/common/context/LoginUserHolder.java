@@ -22,6 +22,10 @@ public final class LoginUserHolder {
         return loginUserContext;
     }
 
+    public static LoginUserContext get() {
+        return LOGIN_USER.get();
+    }
+
     public static void clear() {
         LOGIN_USER.remove();
     }

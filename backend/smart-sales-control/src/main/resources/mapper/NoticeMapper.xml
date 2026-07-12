@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sellinghouses.salescontrol.module.notice.mapper.NoticeMapper">
+
+    <resultMap id="NoticeResultMap" type="com.sellinghouses.salescontrol.module.notice.entity.Notice">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="publisher_id" property="publisherId"/>
+        <result column="target_role" property="targetRole"/>
+        <result column="status" property="status"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <sql id="NoticeColumns">
+        id,
+        title,
+        content,
+        publisher_id,
+        target_role,
+        status,
+        publish_time,
+        create_time,
+        update_time,
+        create_user,
+        update_user
+    </sql>
+
+    <insert id="insert" parameterType="com.sellinghouses.salescontrol.module.notice.entity.Notice" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notice (
+            title,
+            content,
+            publisher_id,
+            target_role,
+            status,
+            create_user,
+            update_user
+        ) VALUES (
+            #{title},
+            #{content},
+            #{publisherId},
+            #{targetRole},
+            #{status},
+            #{createUser},
+            #{updateUser}
+        )
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM notice
+        WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="NoticeResultMap">
+        SELECT
+        <include refid="NoticeColumns"/>
+        FROM notice
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <select id="selectVisibleById" resultMap="NoticeResultMap">
+        SELECT
+        <include refid="NoticeColumns"/>
+        FROM notice
+        WHERE id = #{id}
+          AND status = 1
+          AND (target_role = 'ALL' OR target_role = #{roleCode})
+        LIMIT 1
+    </select>
+
+    <select id="selectVisiblePage" resultMap="NoticeResultMap">
+        SELECT
+        <include refid="NoticeColumns"/>
+        FROM notice
+        WHERE status = 1
+          AND (target_role = 'ALL' OR target_role = #{roleCode})
+        ORDER BY publish_time DESC, id DESC
+    </select>
+</mapper>

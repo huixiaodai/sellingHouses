@@ -1,6 +1,7 @@
 package com.sellinghouses.salescontrol.common.config;
 
 import com.sellinghouses.salescontrol.common.interceptor.JwtAuthInterceptor;
+import com.sellinghouses.salescontrol.common.interceptor.RequestLogInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -12,8 +13,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtAuthInterceptor jwtAuthInterceptor;
 
+    private final RequestLogInterceptor requestLogInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(requestLogInterceptor)
+                .addPathPatterns("/api/**");
+
         registry.addInterceptor(jwtAuthInterceptor)
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(

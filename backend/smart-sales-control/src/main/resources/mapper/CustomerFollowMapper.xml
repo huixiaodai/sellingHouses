@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sellinghouses.salescontrol.module.follow.mapper.CustomerFollowMapper">
+
+    <insert id="insert" parameterType="com.sellinghouses.salescontrol.module.follow.entity.CustomerFollow" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO customer_follow (
+            appointment_id,
+            customer_user_id,
+            sales_user_id,
+            follow_type,
+            follow_content,
+            next_follow_time,
+            create_user,
+            update_user
+        ) VALUES (
+            #{appointmentId},
+            #{customerUserId},
+            #{salesUserId},
+            #{followType},
+            #{followContent},
+            #{nextFollowTime},
+            #{createUser},
+            #{updateUser}
+        )
+    </insert>
+</mapper>

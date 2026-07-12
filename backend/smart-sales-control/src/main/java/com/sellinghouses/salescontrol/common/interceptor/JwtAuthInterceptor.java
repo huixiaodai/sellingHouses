@@ -36,13 +36,18 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         String token = authorization.substring(AuthConstant.TOKEN_PREFIX.length());
         Claims claims = jwtUtil.parseToken(token);
         Long userId = Long.valueOf(claims.getSubject());
+        Integer tokenVersion = jwtUtil.getTokenVersion(claims);
         User user = userMapper.selectById(userId);
         if (user == null) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        if (!tokenVersion.equals(user.getTokenVersion())) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
         if (!UserStatusEnum.ENABLED.getCode().equals(user.getStatus())) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "账号已被禁用");
         }
+        request.setAttribute(RequestLogInterceptor.USER_ID_ATTRIBUTE, user.getId());
         LoginUserHolder.set(new LoginUserContext(user.getId(), user.getUsername(), user.getRealName(), user.getPrimaryRoleCode()));
         return true;
     }

@@ -17,5 +17,5 @@ public interface UserMapper {
 
     int insert(User user);
 
-    int updateLastLoginTime(@Param("id") Long id);
+    int updateLoginSuccess(@Param("id") Long id);
 }

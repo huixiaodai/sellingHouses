@@ -33,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginVO login(LoginRequest request) {
         User user = userMapper.selectByUsername(request.getUsername());
         if (user == null || !PasswordUtil.matches(request.getPassword(), user.getPassword())) {
@@ -41,9 +42,13 @@ public class AuthServiceImpl implements AuthService {
         if (!UserStatusEnum.ENABLED.getCode().equals(user.getStatus())) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "账号已被禁用");
         }
-        userMapper.updateLastLoginTime(user.getId());
+        userMapper.updateLoginSuccess(user.getId());
+        user = userMapper.selectById(user.getId());
+        if (user == null) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
         UserRoleEnum roleEnum = UserRoleEnum.fromCode(user.getPrimaryRoleCode());
-        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getPrimaryRoleCode());
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getPrimaryRoleCode(), user.getTokenVersion());
         return LoginVO.builder()
                 .token(token)
                 .userId(user.getId())

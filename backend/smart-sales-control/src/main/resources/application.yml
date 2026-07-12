@@ -18,6 +18,11 @@ mybatis:
   type-aliases-package: com.sellinghouses.salescontrol.module.*.entity
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+logging:
+  level:
+    com.sellinghouses.salescontrol.module: debug
 
 knife4j:
   enable: true
@@ -26,4 +31,4 @@ knife4j:
 
 jwt:
   secret: selling-houses-smart-sales-control-secret-2026
-  expiration-minutes: 1440
+  expiration-minutes: 180

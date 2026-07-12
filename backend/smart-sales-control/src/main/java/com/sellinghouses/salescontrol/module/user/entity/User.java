@@ -26,6 +26,8 @@ public class User {
 
     private Integer status;
 
+    private Integer tokenVersion;
+
     private LocalDateTime lastLoginTime;
 
     private LocalDateTime createTime;

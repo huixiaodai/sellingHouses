@@ -1,6 +1,7 @@
 package com.sellinghouses.salescontrol.common.exception;
 
 import com.sellinghouses.salescontrol.common.result.Result;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -13,12 +14,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public Result<Void> handleBusinessException(BusinessException e) {
+    public Result<Void> handleBusinessException(BusinessException e, HttpServletResponse response) {
+        response.setStatus(e.getErrorCode().getCode());
         return Result.fail(e.getErrorCode(), e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletResponse response) {
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
         String message = e.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(error -> error.getDefaultMessage() == null ? ErrorCode.BAD_REQUEST.getMessage() : error.getDefaultMessage())
@@ -27,7 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public Result<Void> handleBindException(BindException e) {
+    public Result<Void> handleBindException(BindException e, HttpServletResponse response) {
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
         String message = e.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(error -> error.getDefaultMessage() == null ? ErrorCode.BAD_REQUEST.getMessage() : error.getDefaultMessage())
@@ -36,7 +40,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public Result<Void> handleConstraintViolationException(ConstraintViolationException e) {
+    public Result<Void> handleConstraintViolationException(ConstraintViolationException e, HttpServletResponse response) {
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
         String message = e.getConstraintViolations().stream()
                 .findFirst()
                 .map(violation -> violation.getMessage())
@@ -45,7 +50,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e) {
+    public Result<Void> handleException(Exception e, HttpServletResponse response) {
+        response.setStatus(ErrorCode.SYSTEM_ERROR.getCode());
         log.error("系统异常", e);
         return Result.fail(ErrorCode.SYSTEM_ERROR, ErrorCode.SYSTEM_ERROR.getMessage());
     }

@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS user (
     avatar_url VARCHAR(255) DEFAULT NULL COMMENT '头像地址',
     primary_role_code VARCHAR(32) NOT NULL COMMENT '主角色编码，兼容单角色快速判断',
     status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1启用，0禁用',
+    token_version INT NOT NULL DEFAULT 0 COMMENT 'Token版本号',
     last_login_time DATETIME DEFAULT NULL COMMENT '最后登录时间',
     ext_json JSON DEFAULT NULL COMMENT '扩展字段',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -186,6 +187,28 @@ CREATE TABLE IF NOT EXISTS notice (
     KEY idx_notice_publish_time (publish_time),
     CONSTRAINT fk_notice_publisher FOREIGN KEY (publisher_id) REFERENCES user (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='公告表';
+
+CREATE TABLE IF NOT EXISTS customer_follow (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '客户跟进ID',
+    appointment_id BIGINT DEFAULT NULL COMMENT '预约ID',
+    customer_user_id BIGINT NOT NULL COMMENT '客户用户ID',
+    sales_user_id BIGINT NOT NULL COMMENT '销售用户ID',
+    follow_type TINYINT NOT NULL COMMENT '跟进方式',
+    follow_content VARCHAR(1000) NOT NULL COMMENT '跟进内容',
+    next_follow_time DATETIME DEFAULT NULL COMMENT '下次跟进时间',
+    ext_json JSON DEFAULT NULL COMMENT '扩展字段',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_user BIGINT DEFAULT NULL COMMENT '创建人ID',
+    update_user BIGINT DEFAULT NULL COMMENT '更新人ID',
+    PRIMARY KEY (id),
+    KEY idx_customer_follow_appointment (appointment_id),
+    KEY idx_customer_follow_customer (customer_user_id),
+    KEY idx_customer_follow_sales_time (sales_user_id, create_time),
+    CONSTRAINT fk_customer_follow_appointment FOREIGN KEY (appointment_id) REFERENCES appointment (id),
+    CONSTRAINT fk_customer_follow_customer FOREIGN KEY (customer_user_id) REFERENCES user (id),
+    CONSTRAINT fk_customer_follow_sales FOREIGN KEY (sales_user_id) REFERENCES user (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='客户跟进表';
 
 CREATE TABLE IF NOT EXISTS operation_log (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '操作日志ID',

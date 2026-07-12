@@ -13,6 +13,7 @@
         <result column="avatar_url" property="avatarUrl"/>
         <result column="primary_role_code" property="primaryRoleCode"/>
         <result column="status" property="status"/>
+        <result column="token_version" property="tokenVersion"/>
         <result column="last_login_time" property="lastLoginTime"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
@@ -28,6 +29,7 @@
         avatar_url,
         primary_role_code,
         status,
+        token_version,
         last_login_time,
         create_time,
         update_time
@@ -87,9 +89,10 @@
         )
     </insert>
 
-    <update id="updateLastLoginTime">
+    <update id="updateLoginSuccess">
         UPDATE `user`
         SET last_login_time = NOW(),
+            token_version = token_version + 1,
             update_time = NOW()
         WHERE id = #{id}
     </update>
