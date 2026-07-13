@@ -207,8 +207,8 @@
             r.remark,
             r.create_time
         FROM room r
-        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
-        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
         WHERE r.id = #{id}
           AND r.deleted = 0
         LIMIT 1
@@ -293,8 +293,8 @@
             r.remark,
             r.create_time
         FROM room r
-        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
-        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
         WHERE r.deleted = 0
         <if test="buildingId != null">
           AND r.building_id = #{buildingId}

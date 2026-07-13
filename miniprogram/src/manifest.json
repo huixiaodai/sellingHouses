@@ -1,0 +1,18 @@
+{
+  "name": "售楼处",
+  "appid": "",
+  "description": "Selling houses mini program",
+  "versionName": "0.1.0",
+  "versionCode": "1",
+  "transformPx": false,
+  "h5": {
+    "title": "售楼处"
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false
+    },
+    "usingComponents": true
+  }
+}

@@ -349,7 +349,7 @@ const defaultForm = (): RoomForm => ({
   layout: '',
   orientation: '',
   decoration: '',
-  status: 1,
+  status: 0,
   remark: ''
 });
 
@@ -755,19 +755,19 @@ onMounted(loadRoomTree);
     transform: translateY(-2px);
   }
 
-  &.status-1 {
+  &.status-0 {
     border-left-color: #22c55e;
   }
 
-  &.status-2 {
+  &.status-1 {
     border-left-color: #f59e0b;
   }
 
-  &.status-3 {
+  &.status-2 {
     border-left-color: #ef4444;
   }
 
-  &.status-4 {
+  &.status-3 {
     border-left-color: #94a3b8;
     background: #f8fafc;
   }

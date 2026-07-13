@@ -17,6 +17,8 @@
         <result column="last_login_time" property="lastLoginTime"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
     </resultMap>
 
     <resultMap id="SalesUserResultMap" type="com.sellinghouses.salescontrol.module.user.vo.SalesUserVO">
@@ -39,7 +41,9 @@
         token_version,
         last_login_time,
         create_time,
-        update_time
+        update_time,
+        create_user,
+        update_user
     </sql>
 
     <select id="selectById" resultMap="UserResultMap">
@@ -83,7 +87,9 @@
             wx_openid,
             avatar_url,
             primary_role_code,
-            status
+            status,
+            create_user,
+            update_user
         ) VALUES (
             #{username},
             #{password},
@@ -92,7 +98,9 @@
             #{wxOpenid},
             #{avatarUrl},
             #{primaryRoleCode},
-            #{status}
+            #{status},
+            #{createUser},
+            #{updateUser}
         )
     </insert>
 

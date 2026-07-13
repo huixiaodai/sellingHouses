@@ -4,10 +4,10 @@ export const enabledStatusOptions = [
 ];
 
 export const roomStatusOptions = [
-  { label: '待售', value: 1, type: 'success' },
-  { label: '已预订', value: 2, type: 'warning' },
-  { label: '已售', value: 3, type: 'danger' },
-  { label: '不可售', value: 4, type: 'info' }
+  { label: '待售', value: 0, type: 'success' },
+  { label: '已预订', value: 1, type: 'warning' },
+  { label: '已售', value: 2, type: 'danger' },
+  { label: '不可售', value: 3, type: 'info' }
 ] as const;
 
 export const appointmentStatusOptions = [

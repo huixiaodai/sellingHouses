@@ -20,7 +20,6 @@ import com.sellinghouses.salescontrol.module.user.mapper.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -62,21 +61,20 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(RegisterRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "两次密码不一致");
+        }
         if (userMapper.selectByUsername(request.getUsername()) != null) {
-            throw new BusinessException(ErrorCode.CONFLICT, "登录账号已存在");
+            throw new BusinessException(ErrorCode.CONFLICT, "账号已存在");
         }
         if (userMapper.selectByPhone(request.getPhone()) != null) {
-            throw new BusinessException(ErrorCode.CONFLICT, "手机号已注册");
-        }
-        if (StringUtils.hasText(request.getWxOpenid()) && userMapper.selectByWxOpenid(request.getWxOpenid()) != null) {
-            throw new BusinessException(ErrorCode.CONFLICT, "微信账号已注册");
+            throw new BusinessException(ErrorCode.CONFLICT, "手机号已存在");
         }
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(PasswordUtil.encode(request.getPassword()));
-        user.setRealName(request.getRealName());
+        user.setRealName(request.getUsername());
         user.setPhone(request.getPhone());
-        user.setWxOpenid(request.getWxOpenid());
         user.setPrimaryRoleCode(UserRoleEnum.CUSTOMER.getCode());
         user.setStatus(UserStatusEnum.ENABLED.getCode());
         userMapper.insert(user);

@@ -1,0 +1,48 @@
+{
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/register/register",
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/home",
+      "style": {
+        "navigationBarTitleText": "房源"
+      }
+    },
+    {
+      "path": "pages/building/detail",
+      "style": {
+        "navigationBarTitleText": "楼盘详情"
+      }
+    },
+    {
+      "path": "pages/room/list",
+      "style": {
+        "navigationBarTitleText": "房源列表"
+      }
+    },
+    {
+      "path": "pages/room/detail",
+      "style": {
+        "navigationBarTitleText": "房源详情"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "售楼处",
+    "navigationBarBackgroundColor": "#f6f3ec",
+    "backgroundColor": "#f6f3ec"
+  }
+}
