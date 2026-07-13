@@ -73,7 +73,7 @@
         type="info"
         :closable="false"
         show-icon
-        title="状态流转：待处理 -> 已分配 -> 已完成 / 已取消"
+        title="状态流转：已预约 -> 已取消 / 已过期"
       />
       <el-form :model="statusForm" label-width="96px">
         <el-form-item label="预约状态">
@@ -178,15 +178,8 @@ const statusUpdateOptions = computed<StatusOption[]>(() => {
   if (currentStatus === 1) {
     return [
       { label: `${currentLabel}（当前）`, value: 1, disabled: true },
-      { label: '已分配', value: 2 },
-      { label: '已取消', value: 4 }
-    ];
-  }
-  if (currentStatus === 2) {
-    return [
-      { label: `${currentLabel}（当前）`, value: 2, disabled: true },
-      { label: '已完成', value: 3 },
-      { label: '已取消', value: 4 }
+      { label: '已取消', value: 2 },
+      { label: '已过期', value: 3 }
     ];
   }
   return [{ label: `${currentLabel}（当前）`, value: Number(currentStatus), disabled: true }];
@@ -218,10 +211,6 @@ const openStatus = async (row: AppointmentVO) => {
 };
 
 const handleStatusSubmit = async () => {
-  if ((statusForm.status === 2 || statusForm.status === 3) && !statusForm.salesUserId) {
-    ElMessage.warning('分配或完成预约前必须选择销售');
-    return;
-  }
   await updateAppointmentStatusApi(statusForm);
   ElMessage.success('预约状态已更新');
   statusVisible.value = false;

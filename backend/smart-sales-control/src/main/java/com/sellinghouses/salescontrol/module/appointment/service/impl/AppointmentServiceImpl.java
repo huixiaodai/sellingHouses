@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sellinghouses.salescontrol.common.context.LoginUserContext;
 import com.sellinghouses.salescontrol.common.context.LoginUserHolder;
 import com.sellinghouses.salescontrol.common.enums.AppointmentStatusEnum;
+import com.sellinghouses.salescontrol.common.enums.RoomStatusEnum;
 import com.sellinghouses.salescontrol.common.enums.UserRoleEnum;
 import com.sellinghouses.salescontrol.common.exception.BusinessException;
 import com.sellinghouses.salescontrol.common.exception.ErrorCode;
@@ -48,6 +49,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (!createDTO.getAppointmentTime().isAfter(LocalDateTime.now())) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "Appointment time must be later than now");
         }
+        if (appointmentMapper.countActiveByUserAndRoom(loginUser.getUserId(), createDTO.getRoomId()) > 0) {
+            throw new BusinessException(ErrorCode.CONFLICT, "You already have an active appointment for this room");
+        }
         Appointment appointment = new Appointment();
         appointment.setUserId(loginUser.getUserId());
         appointment.setRoomId(createDTO.getRoomId());
@@ -55,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setContactName(createDTO.getContactName());
         appointment.setContactPhone(createDTO.getContactPhone());
         appointment.setRemark(createDTO.getRemark());
-        appointment.setStatus(AppointmentStatusEnum.PENDING.getCode());
+        appointment.setStatus(AppointmentStatusEnum.BOOKED.getCode());
         appointment.setCreateUser(loginUser.getUserId());
         appointment.setUpdateUser(loginUser.getUserId());
         appointmentMapper.insert(appointment);
@@ -70,8 +74,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (!loginUser.getUserId().equals(appointment.getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
-        if (AppointmentStatusEnum.CANCELED.getCode().equals(appointment.getStatus())) {
-            throw new BusinessException(ErrorCode.CONFLICT, "Appointment is already canceled");
+        if (!AppointmentStatusEnum.BOOKED.getCode()
+                .equals(resolveDisplayStatus(appointment.getStatus(), appointment.getAppointmentTime()))) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Only active booked appointments can be canceled");
         }
         appointmentMapper.cancel(cancelDTO.getId(), cancelDTO.getCancelReason(), loginUser.getUserId());
     }
@@ -125,7 +130,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             requireUserRole(updateDTO.getSalesUserId(), UserRoleEnum.SALES);
         }
         validateStatusTransition(appointment, updateDTO);
-        appointmentMapper.updateStatus(updateDTO.getId(), updateDTO.getStatus(), updateDTO.getSalesUserId(), loginUser.getUserId());
+        appointmentMapper.updateStatus(updateDTO.getId(), updateDTO.getStatus(), updateDTO.getSalesUserId(),
+                loginUser.getUserId());
     }
 
     @Override
@@ -146,24 +152,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (currentStatus.equals(targetStatus)) {
             return;
         }
-
-        boolean allowed = false;
-        if (AppointmentStatusEnum.PENDING.getCode().equals(currentStatus)) {
-            allowed = AppointmentStatusEnum.CONFIRMED.getCode().equals(targetStatus)
-                    || AppointmentStatusEnum.CANCELED.getCode().equals(targetStatus);
-        } else if (AppointmentStatusEnum.CONFIRMED.getCode().equals(currentStatus)) {
-            allowed = AppointmentStatusEnum.VISITED.getCode().equals(targetStatus)
-                    || AppointmentStatusEnum.CANCELED.getCode().equals(targetStatus);
-        }
-        if (!allowed) {
+        Integer displayStatus = resolveDisplayStatus(currentStatus, appointment.getAppointmentTime());
+        if (!AppointmentStatusEnum.BOOKED.getCode().equals(displayStatus)
+                || AppointmentStatusEnum.BOOKED.getCode().equals(targetStatus)) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid appointment status transition");
-        }
-
-        boolean needsSales = AppointmentStatusEnum.CONFIRMED.getCode().equals(targetStatus)
-                || AppointmentStatusEnum.VISITED.getCode().equals(targetStatus);
-        boolean hasSales = updateDTO.getSalesUserId() != null || appointment.getSalesUserId() != null;
-        if (needsSales && !hasSales) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST, "Sales user is required before assignment or completion");
         }
     }
 
@@ -171,6 +163,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         Room room = roomMapper.selectById(roomId);
         if (room == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND, "Room does not exist");
+        }
+        if (!RoomStatusEnum.AVAILABLE.getCode().equals(room.getStatus())) {
+            throw new BusinessException(ErrorCode.CONFLICT, "Sold rooms cannot be appointed");
         }
         return room;
     }
@@ -232,9 +227,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .contactName(appointment.getContactName())
                 .contactPhone(appointment.getContactPhone())
                 .remark(appointment.getRemark())
-                .status(appointment.getStatus())
+                .status(resolveDisplayStatus(appointment.getStatus(), appointment.getAppointmentTime()))
                 .cancelReason(appointment.getCancelReason())
                 .createTime(appointment.getCreateTime())
                 .build();
+    }
+
+    private Integer resolveDisplayStatus(Integer status, LocalDateTime appointmentTime) {
+        if (AppointmentStatusEnum.BOOKED.getCode().equals(status)
+                && appointmentTime != null
+                && appointmentTime.isBefore(LocalDateTime.now())) {
+            return AppointmentStatusEnum.EXPIRED.getCode();
+        }
+        return status;
     }
 }

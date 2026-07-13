@@ -7,11 +7,9 @@ import lombok.Getter;
 @Getter
 public enum AppointmentStatusEnum {
 
-    PENDING(1, "待确认"),
-    CONFIRMED(2, "已确认"),
-    VISITED(3, "已看房"),
-    CANCELED(4, "已取消"),
-    EXPIRED(5, "已过期");
+    BOOKED(1, "已预约"),
+    CANCELED(2, "已取消"),
+    EXPIRED(3, "已过期");
 
     private final Integer code;
 

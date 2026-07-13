@@ -199,9 +199,9 @@ INSERT INTO appointment (
     create_user,
     update_user
 ) VALUES
-    (1, 2, 3, 1, '2026-08-10 10:00:00', 'Customer One', '13900000001', 'Assigned appointment', 2, NULL, 2, 1),
-    (2, 2, NULL, 1, '2026-08-11 14:00:00', 'Customer One', '13900000001', 'Pending assignment', 1, NULL, 2, 2),
-    (3, 2, 3, 2, '2026-08-12 16:00:00', 'Customer One', '13900000001', 'Visited appointment', 3, NULL, 2, 1)
+    (1, 2, 3, 1, '2026-08-10 10:00:00', 'Customer One', '13900000001', 'Booked appointment', 1, NULL, 2, 1),
+    (2, 2, NULL, 1, '2026-08-11 14:00:00', 'Customer One', '13900000001', 'Canceled appointment', 2, 'Customer canceled', 2, 2),
+    (3, 2, 3, 2, '2026-08-12 16:00:00', 'Customer One', '13900000001', 'Expired appointment', 3, NULL, 2, 1)
 ON DUPLICATE KEY UPDATE
     user_id = VALUES(user_id),
     sales_user_id = VALUES(sales_user_id),

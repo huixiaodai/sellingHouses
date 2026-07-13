@@ -1,9 +1,14 @@
 export const ROOM_STATUS_OPTIONS = [
   { label: '全部', value: '' },
   { label: '待售', value: 0 },
-  { label: '已预订', value: 1 },
-  { label: '已售', value: 2 },
-  { label: '不可售', value: 3 }
+  { label: '已售', value: 1 }
+];
+
+export const APPOINTMENT_STATUS_OPTIONS = [
+  { label: '全部', value: '' },
+  { label: '已预约', value: 1 },
+  { label: '已取消', value: 2 },
+  { label: '已过期', value: 3 }
 ];
 
 export function formatDateTime(value) {
@@ -32,11 +37,23 @@ export function getRoomStatus(status) {
 export function getRoomStatusClass(status) {
   const map = {
     0: 'status-available',
-    1: 'status-reserved',
-    2: 'status-sold',
-    3: 'status-unavailable'
+    1: 'status-sold'
   };
   return map[status] || 'status-unknown';
+}
+
+export function getAppointmentStatus(status) {
+  const item = APPOINTMENT_STATUS_OPTIONS.find((option) => option.value === status);
+  return item ? item.label : '未知';
+}
+
+export function getAppointmentStatusClass(status) {
+  const map = {
+    1: 'appointment-booked',
+    2: 'appointment-canceled',
+    3: 'appointment-expired'
+  };
+  return map[status] || 'appointment-unknown';
 }
 
 export function parseImageList(value) {

@@ -37,11 +37,17 @@
       "style": {
         "navigationBarTitleText": "房源详情"
       }
+    },
+    {
+      "path": "pages/appointment/list",
+      "style": {
+        "navigationBarTitleText": "我的预约"
+      }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "售楼处",
+    "navigationBarTitleText": "售楼大厅",
     "navigationBarBackgroundColor": "#f6f3ec",
     "backgroundColor": "#f6f3ec"
   }

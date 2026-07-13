@@ -57,8 +57,8 @@ public class RoomAddDTO {
     private String decoration;
 
     @Min(value = 0, message = "房源状态不合法")
-    @Max(value = 3, message = "房源状态不合法")
-    @Schema(description = "状态：0待售，1已预订，2已售，3不可售")
+    @Max(value = 1, message = "房源状态不合法")
+    @Schema(description = "状态：0待售，1已售")
     private Integer status = 0;
 
     @Schema(description = "备注")

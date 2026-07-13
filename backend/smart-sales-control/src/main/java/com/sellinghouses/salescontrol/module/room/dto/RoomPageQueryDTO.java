@@ -30,6 +30,6 @@ public class RoomPageQueryDTO {
     @Schema(description = "房号")
     private String roomNo;
 
-    @Schema(description = "状态：0待售，1已预订，2已售，3不可售")
+    @Schema(description = "状态：0待售，1已售")
     private Integer status;
 }

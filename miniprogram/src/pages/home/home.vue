@@ -1,16 +1,19 @@
 <template>
   <view class="page">
     <view class="hero">
-      <text class="eyebrow">SELLING HOUSES</text>
+      <view class="hero-top">
+        <text class="eyebrow">SELLING HOUSES</text>
+        <button class="appointment-entry" @tap="goAppointments">我的预约</button>
+      </view>
       <text class="title">精选房源</text>
-      <text class="subtitle">直接浏览可售房源，查看价格、户型与销售状态</text>
+      <text class="subtitle">直接浏览待售房源，查看价格、户型与销售状态</text>
     </view>
 
     <view v-if="loading && rooms.length === 0" class="state">加载中...</view>
 
     <view v-else-if="rooms.length === 0" class="state">
       <text class="state-title">暂无房源</text>
-      <text class="state-desc">稍后再来看看新的可售房源</text>
+      <text class="state-desc">稍后再来看看新的待售房源</text>
     </view>
 
     <view v-else class="room-list">
@@ -109,6 +112,12 @@ function goDetail(id) {
     url: `/pages/room/detail?id=${id}`
   });
 }
+
+function goAppointments() {
+  uni.navigateTo({
+    url: '/pages/appointment/list'
+  });
+}
 </script>
 
 <style scoped>
@@ -124,11 +133,31 @@ function goDetail(id) {
   margin-bottom: 28rpx;
 }
 
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
 .eyebrow {
   display: block;
   color: #9b6b26;
   font-size: 22rpx;
   font-weight: 800;
+}
+
+.appointment-entry {
+  height: 60rpx;
+  min-width: 150rpx;
+  margin: 0;
+  padding: 0 18rpx;
+  border-radius: 8rpx;
+  background: #1f352c;
+  color: #fff8e8;
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 60rpx;
 }
 
 .title {
@@ -249,20 +278,10 @@ function goDetail(id) {
   background: #e5f4ea;
 }
 
-.status-reserved {
-  color: #8b5f20;
-  background: #f8ebcf;
-}
-
-.status-sold {
+.status-sold,
+.status-unknown {
   color: #9a342f;
   background: #f7dedb;
-}
-
-.status-unavailable,
-.status-unknown {
-  color: #6b7280;
-  background: #ece8df;
 }
 
 .state {

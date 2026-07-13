@@ -760,16 +760,7 @@ onMounted(loadRoomTree);
   }
 
   &.status-1 {
-    border-left-color: #f59e0b;
-  }
-
-  &.status-2 {
     border-left-color: #ef4444;
-  }
-
-  &.status-3 {
-    border-left-color: #94a3b8;
-    background: #f8fafc;
   }
 }
 

@@ -20,6 +20,8 @@ public interface AppointmentMapper {
 
     Appointment selectById(@Param("id") Long id);
 
+    int countActiveByUserAndRoom(@Param("userId") Long userId, @Param("roomId") Long roomId);
+
     List<AppointmentQueryDTO> selectUserPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("userId") Long userId);
 
     List<AppointmentQueryDTO> selectSalesPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("salesUserId") Long salesUserId);

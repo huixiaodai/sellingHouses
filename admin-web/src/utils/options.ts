@@ -5,16 +5,13 @@ export const enabledStatusOptions = [
 
 export const roomStatusOptions = [
   { label: '待售', value: 0, type: 'success' },
-  { label: '已预订', value: 1, type: 'warning' },
-  { label: '已售', value: 2, type: 'danger' },
-  { label: '不可售', value: 3, type: 'info' }
+  { label: '已售', value: 1, type: 'danger' }
 ] as const;
 
 export const appointmentStatusOptions = [
-  { label: '待处理', value: 1, type: 'warning' },
-  { label: '已分配', value: 2, type: 'primary' },
-  { label: '已完成', value: 3, type: 'success' },
-  { label: '已取消', value: 4, type: 'info' }
+  { label: '已预约', value: 1, type: 'warning' },
+  { label: '已取消', value: 2, type: 'info' },
+  { label: '已过期', value: 3, type: 'danger' }
 ] as const;
 
 export const noticeTargetOptions = [
