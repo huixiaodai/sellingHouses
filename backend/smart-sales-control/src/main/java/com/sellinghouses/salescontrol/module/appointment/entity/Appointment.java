@@ -14,8 +14,6 @@ public class Appointment {
 
     private Long salesUserId;
 
-    private Long buildingId;
-
     private Long roomId;
 
     private LocalDateTime appointmentTime;

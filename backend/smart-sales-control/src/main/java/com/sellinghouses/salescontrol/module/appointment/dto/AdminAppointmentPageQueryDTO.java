@@ -7,23 +7,38 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "管理员预约分页查询请求")
+@Schema(description = "Admin appointment page query request")
 public class AdminAppointmentPageQueryDTO {
 
-    @Min(value = 1, message = "页码必须大于0")
-    @Schema(description = "页码")
+    @Min(value = 1, message = "pageNo must be greater than 0")
+    @Schema(description = "Page number")
     private Integer pageNo = 1;
 
-    @Min(value = 1, message = "每页条数必须大于0")
-    @Schema(description = "每页条数")
+    @Min(value = 1, message = "pageSize must be greater than 0")
+    @Schema(description = "Page size")
     private Integer pageSize = 10;
 
-    @Schema(description = "楼盘ID")
+    @Schema(description = "Building name")
+    private String buildingName;
+
+    @Schema(description = "Building ID")
+    private Long buildingId;
+
+    @Schema(description = "Building ID, compatible with old estateId parameter")
     private Long estateId;
 
-    @Schema(description = "销售ID")
+    @Schema(description = "Sales user ID")
     private Long salesUserId;
 
-    @Schema(description = "预约状态")
+    @Schema(description = "Sales name")
+    private String salesName;
+
+    @Schema(description = "Contact name")
+    private String contactName;
+
+    @Schema(description = "Contact phone")
+    private String contactPhone;
+
+    @Schema(description = "Appointment status")
     private Integer status;
 }

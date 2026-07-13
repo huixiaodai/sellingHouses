@@ -19,7 +19,11 @@ public interface BuildingMapper {
 
     Building selectById(@Param("id") Long id);
 
+    Building selectVisibleById(@Param("id") Long id);
+
     int countByName(@Param("name") String name, @Param("excludeId") Long excludeId);
 
     List<Building> selectPage(BuildingPageQueryDTO queryDTO);
+
+    List<Building> selectVisiblePage(BuildingPageQueryDTO queryDTO);
 }

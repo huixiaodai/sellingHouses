@@ -19,6 +19,13 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <resultMap id="SalesUserResultMap" type="com.sellinghouses.salescontrol.module.user.vo.SalesUserVO">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="real_name" property="realName"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
     <sql id="UserColumns">
         id,
         username,
@@ -96,4 +103,16 @@
             update_time = NOW()
         WHERE id = #{id}
     </update>
+
+    <select id="selectSalesUsers" resultMap="SalesUserResultMap">
+        SELECT
+            id,
+            username,
+            real_name,
+            phone
+        FROM `user`
+        WHERE primary_role_code = 'SALES'
+          AND status = 1
+        ORDER BY id ASC
+    </select>
 </mapper>

@@ -62,4 +62,20 @@ public interface RoomService {
      * @return 房源分页结果
      */
     PageResult<RoomVO> page(RoomPageQueryDTO queryDTO);
+
+    /**
+     * Query visible room detail for mobile clients.
+     *
+     * @param idDTO primary key request
+     * @return visible room detail
+     */
+    RoomVO mobileDetail(IdDTO idDTO);
+
+    /**
+     * Query visible rooms for mobile clients.
+     *
+     * @param queryDTO page query request
+     * @return visible room page result
+     */
+    PageResult<RoomVO> mobilePage(RoomPageQueryDTO queryDTO);
 }

@@ -54,4 +54,20 @@ public interface BuildingService {
      * @return 楼盘分页结果
      */
     PageResult<BuildingVO> page(BuildingPageQueryDTO queryDTO);
+
+    /**
+     * Query visible building detail for mobile clients.
+     *
+     * @param idDTO primary key request
+     * @return visible building detail
+     */
+    BuildingVO mobileDetail(IdDTO idDTO);
+
+    /**
+     * Query visible buildings for mobile clients.
+     *
+     * @param queryDTO page query request
+     * @return visible building page result
+     */
+    PageResult<BuildingVO> mobilePage(BuildingPageQueryDTO queryDTO);
 }

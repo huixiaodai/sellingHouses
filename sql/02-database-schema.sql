@@ -147,8 +147,7 @@ CREATE TABLE IF NOT EXISTS appointment (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '预约ID',
     user_id BIGINT NOT NULL COMMENT '购房用户ID',
     sales_user_id BIGINT DEFAULT NULL COMMENT '跟进销售ID',
-    building_id BIGINT NOT NULL COMMENT '楼盘ID',
-    room_id BIGINT DEFAULT NULL COMMENT '意向房源ID',
+    room_id BIGINT NOT NULL COMMENT '房源ID',
     appointment_time DATETIME NOT NULL COMMENT '预约看房时间',
     contact_name VARCHAR(64) NOT NULL COMMENT '联系人姓名',
     contact_phone VARCHAR(20) NOT NULL COMMENT '联系人手机号',
@@ -163,11 +162,10 @@ CREATE TABLE IF NOT EXISTS appointment (
     PRIMARY KEY (id),
     KEY idx_appointment_user_id (user_id),
     KEY idx_appointment_sales_user_id (sales_user_id),
-    KEY idx_appointment_building_status (building_id, status),
+    KEY idx_appointment_room_status (room_id, status),
     KEY idx_appointment_time (appointment_time),
     CONSTRAINT fk_appointment_user FOREIGN KEY (user_id) REFERENCES user (id),
     CONSTRAINT fk_appointment_sales_user FOREIGN KEY (sales_user_id) REFERENCES user (id),
-    CONSTRAINT fk_appointment_building FOREIGN KEY (building_id) REFERENCES building (id),
     CONSTRAINT fk_appointment_room FOREIGN KEY (room_id) REFERENCES room (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='看房预约表';
 

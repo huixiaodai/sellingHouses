@@ -12,6 +12,8 @@ public class AppointmentQueryDTO {
 
     private Long userId;
 
+    private String customerName;
+
     private Long salesUserId;
 
     private String salesName;
@@ -19,6 +21,10 @@ public class AppointmentQueryDTO {
     private Long buildingId;
 
     private String buildingName;
+
+    private Long unitId;
+
+    private String unitName;
 
     private Long roomId;
 

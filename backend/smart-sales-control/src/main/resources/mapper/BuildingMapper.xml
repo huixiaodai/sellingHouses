@@ -111,6 +111,16 @@
         LIMIT 1
     </select>
 
+    <select id="selectVisibleById" resultMap="BuildingResultMap">
+        SELECT
+        <include refid="BuildingColumns"/>
+        FROM building
+        WHERE id = #{id}
+          AND status = 1
+          AND deleted = 0
+        LIMIT 1
+    </select>
+
     <select id="countByName" resultType="int">
         SELECT COUNT(1)
         FROM building
@@ -126,6 +136,21 @@
         <include refid="BuildingColumns"/>
         FROM building
         WHERE deleted = 0
+        <if test="name != null and name != ''">
+          AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="status != null">
+          AND status = #{status}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectVisiblePage" resultMap="BuildingResultMap">
+        SELECT
+        <include refid="BuildingColumns"/>
+        FROM building
+        WHERE deleted = 0
+          AND status = 1
         <if test="name != null and name != ''">
           AND name LIKE CONCAT('%', #{name}, '%')
         </if>

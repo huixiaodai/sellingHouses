@@ -9,28 +9,25 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "预约看房请求")
+@Schema(description = "Appointment create request")
 public class AppointmentCreateDTO {
 
-    @NotNull(message = "楼盘ID不能为空")
-    @Schema(description = "楼盘ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long estateId;
-
-    @Schema(description = "意向房源ID")
+    @NotNull(message = "Room ID is required")
+    @Schema(description = "Room ID", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long roomId;
 
-    @NotNull(message = "预约时间不能为空")
-    @Schema(description = "预约时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Appointment time is required")
+    @Schema(description = "Appointment time", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime appointmentTime;
 
-    @NotBlank(message = "联系人不能为空")
-    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "Contact name is required")
+    @Schema(description = "Contact name", requiredMode = Schema.RequiredMode.REQUIRED)
     private String contactName;
 
-    @NotBlank(message = "联系电话不能为空")
-    @Schema(description = "联系电话", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "Contact phone is required")
+    @Schema(description = "Contact phone", requiredMode = Schema.RequiredMode.REQUIRED)
     private String contactPhone;
 
-    @Schema(description = "备注")
+    @Schema(description = "Remark")
     private String remark;
 }

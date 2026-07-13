@@ -7,52 +7,61 @@ import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentCreateDT
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentPageQueryDTO;
 import com.sellinghouses.salescontrol.module.appointment.dto.AppointmentStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.appointment.vo.AppointmentVO;
+import com.sellinghouses.salescontrol.module.user.vo.SalesUserVO;
+import java.util.List;
 
 public interface AppointmentService {
 
     /**
-     * 创建看房预约。
+     * Create a viewing appointment.
      *
-     * @param createDTO 预约创建请求
-     * @return 预约ID
+     * @param createDTO appointment creation request
+     * @return appointment ID
      */
     Long create(AppointmentCreateDTO createDTO);
 
     /**
-     * 取消当前用户自己的预约。
+     * Cancel current customer's own appointment.
      *
-     * @param cancelDTO 取消预约请求
+     * @param cancelDTO appointment cancel request
      */
     void cancel(AppointmentCancelDTO cancelDTO);
 
     /**
-     * 查询当前购房用户自己的预约。
+     * Query current customer's own appointments.
      *
-     * @param queryDTO 分页查询请求
-     * @return 预约分页
+     * @param queryDTO page query request
+     * @return appointment page
      */
     PageResult<AppointmentVO> userPage(AppointmentPageQueryDTO queryDTO);
 
     /**
-     * 查询管理员可见的预约。
+     * Query admin-visible appointments.
      *
-     * @param queryDTO 管理员分页查询请求
-     * @return 预约分页
+     * @param queryDTO admin page query request
+     * @return appointment page
      */
     PageResult<AppointmentVO> adminPage(AdminAppointmentPageQueryDTO queryDTO);
 
     /**
-     * 查询当前销售分配到的预约。
+     * Query appointments assigned to current sales user.
      *
-     * @param queryDTO 分页查询请求
-     * @return 预约分页
+     * @param queryDTO page query request
+     * @return appointment page
      */
     PageResult<AppointmentVO> salesPage(AppointmentPageQueryDTO queryDTO);
 
     /**
-     * 管理员修改预约状态和销售分配。
+     * Update appointment status and assigned sales user.
      *
-     * @param updateDTO 状态修改请求
+     * @param updateDTO status update request
      */
     void updateStatus(AppointmentStatusUpdateDTO updateDTO);
+
+    /**
+     * Query active sales users for appointment assignment.
+     *
+     * @return sales user list
+     */
+    List<SalesUserVO> listSalesUsers();
 }

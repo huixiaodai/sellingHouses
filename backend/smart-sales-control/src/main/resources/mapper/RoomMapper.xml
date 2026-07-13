@@ -187,6 +187,33 @@
         LIMIT 1
     </select>
 
+    <select id="selectVisibleDetailById" resultMap="RoomQueryResultMap">
+        SELECT
+            r.id,
+            r.building_id,
+            b.name AS building_name,
+            r.unit_id,
+            bu.name AS unit_name,
+            r.room_no,
+            r.floor_no,
+            r.area,
+            r.price,
+            r.cover,
+            r.images,
+            r.layout,
+            r.orientation,
+            r.decoration,
+            r.status,
+            r.remark,
+            r.create_time
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
+        WHERE r.id = #{id}
+          AND r.deleted = 0
+        LIMIT 1
+    </select>
+
     <select id="countByRoomNo" resultType="int">
         SELECT COUNT(1)
         FROM room
@@ -227,6 +254,47 @@
         FROM room r
         INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
         INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
+        WHERE r.deleted = 0
+        <if test="buildingId != null">
+          AND r.building_id = #{buildingId}
+        </if>
+        <if test="unitId != null">
+          AND r.unit_id = #{unitId}
+        </if>
+        <if test="floorNo != null">
+          AND r.floor_no = #{floorNo}
+        </if>
+        <if test="roomNo != null and roomNo != ''">
+          AND r.room_no LIKE CONCAT('%', #{roomNo}, '%')
+        </if>
+        <if test="status != null">
+          AND r.status = #{status}
+        </if>
+        ORDER BY r.building_id ASC, r.unit_id ASC, r.floor_no ASC, r.room_no ASC
+    </select>
+
+    <select id="selectVisiblePage" resultMap="RoomQueryResultMap">
+        SELECT
+            r.id,
+            r.building_id,
+            b.name AS building_name,
+            r.unit_id,
+            bu.name AS unit_name,
+            r.room_no,
+            r.floor_no,
+            r.area,
+            r.price,
+            r.cover,
+            r.images,
+            r.layout,
+            r.orientation,
+            r.decoration,
+            r.status,
+            r.remark,
+            r.create_time
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
         WHERE r.deleted = 0
         <if test="buildingId != null">
           AND r.building_id = #{buildingId}

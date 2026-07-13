@@ -123,6 +123,31 @@ public class RoomServiceImpl implements RoomService {
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
 
+    @Override
+    public RoomVO mobileDetail(IdDTO idDTO) {
+        requireLogin();
+        RoomQueryDTO room = roomMapper.selectVisibleDetailById(idDTO.getId());
+        if (room == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "房源不存在");
+        }
+        return toVO(room);
+    }
+
+    @Override
+    public PageResult<RoomVO> mobilePage(RoomPageQueryDTO queryDTO) {
+        requireLogin();
+        if (queryDTO.getStatus() != null) {
+            RoomStatusEnum.validate(queryDTO.getStatus());
+        }
+        int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
+        int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
+        PageHelper.startPage(pageNo, pageSize);
+        List<RoomQueryDTO> rooms = roomMapper.selectVisiblePage(queryDTO);
+        PageInfo<RoomQueryDTO> pageInfo = new PageInfo<>(rooms);
+        List<RoomVO> records = rooms.stream().map(this::toVO).toList();
+        return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
+    }
+
     private void fillRoom(Room room, Long buildingId, Long unitId, String roomNo, Integer floorNo,
                           java.math.BigDecimal area, java.math.BigDecimal price, String cover, String images,
                           String layout, String orientation, String decoration, Integer status, String remark) {
@@ -174,6 +199,10 @@ public class RoomServiceImpl implements RoomService {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         return loginUser;
+    }
+
+    private void requireLogin() {
+        LoginUserHolder.getRequired();
     }
 
     private RoomVO toVO(Room room) {

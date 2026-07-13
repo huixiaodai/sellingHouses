@@ -7,7 +7,6 @@
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="sales_user_id" property="salesUserId"/>
-        <result column="building_id" property="buildingId"/>
         <result column="room_id" property="roomId"/>
         <result column="appointment_time" property="appointmentTime"/>
         <result column="contact_name" property="contactName"/>
@@ -24,10 +23,13 @@
     <resultMap id="AppointmentQueryResultMap" type="com.sellinghouses.salescontrol.module.appointment.dto.AppointmentQueryDTO">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
+        <result column="customer_name" property="customerName"/>
         <result column="sales_user_id" property="salesUserId"/>
         <result column="sales_name" property="salesName"/>
         <result column="building_id" property="buildingId"/>
         <result column="building_name" property="buildingName"/>
+        <result column="unit_id" property="unitId"/>
+        <result column="unit_name" property="unitName"/>
         <result column="room_id" property="roomId"/>
         <result column="room_no" property="roomNo"/>
         <result column="appointment_time" property="appointmentTime"/>
@@ -43,7 +45,6 @@
         id,
         user_id,
         sales_user_id,
-        building_id,
         room_id,
         appointment_time,
         contact_name,
@@ -57,11 +58,39 @@
         update_user
     </sql>
 
+    <sql id="AppointmentQueryColumns">
+        a.id,
+        a.user_id,
+        COALESCE(c.real_name, c.username) AS customer_name,
+        a.sales_user_id,
+        COALESCE(s.real_name, s.username) AS sales_name,
+        r.building_id,
+        b.name AS building_name,
+        r.unit_id,
+        bu.name AS unit_name,
+        a.room_id,
+        r.room_no,
+        a.appointment_time,
+        a.contact_name,
+        a.contact_phone,
+        a.remark,
+        a.status,
+        a.cancel_reason,
+        a.create_time
+    </sql>
+
+    <sql id="AppointmentQueryJoins">
+        INNER JOIN room r ON a.room_id = r.id AND r.deleted = 0
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0
+        LEFT JOIN `user` c ON a.user_id = c.id
+        LEFT JOIN `user` s ON a.sales_user_id = s.id
+    </sql>
+
     <insert id="insert" parameterType="com.sellinghouses.salescontrol.module.appointment.entity.Appointment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO appointment (
             user_id,
             sales_user_id,
-            building_id,
             room_id,
             appointment_time,
             contact_name,
@@ -73,7 +102,6 @@
         ) VALUES (
             #{userId},
             #{salesUserId},
-            #{buildingId},
             #{roomId},
             #{appointmentTime},
             #{contactName},
@@ -113,55 +141,56 @@
         LIMIT 1
     </select>
 
-    <select id="selectUserPage" resultMap="AppointmentResultMap">
+    <select id="selectUserPage" resultMap="AppointmentQueryResultMap">
         SELECT
-        <include refid="AppointmentColumns"/>
-        FROM appointment
-        WHERE user_id = #{userId}
+        <include refid="AppointmentQueryColumns"/>
+        FROM appointment a
+        <include refid="AppointmentQueryJoins"/>
+        WHERE a.user_id = #{userId}
         <if test="query.status != null">
-          AND status = #{query.status}
+          AND a.status = #{query.status}
         </if>
-        ORDER BY appointment_time DESC, id DESC
+        ORDER BY a.appointment_time DESC, a.id DESC
     </select>
 
-    <select id="selectSalesPage" resultMap="AppointmentResultMap">
+    <select id="selectSalesPage" resultMap="AppointmentQueryResultMap">
         SELECT
-        <include refid="AppointmentColumns"/>
-        FROM appointment
-        WHERE sales_user_id = #{salesUserId}
+        <include refid="AppointmentQueryColumns"/>
+        FROM appointment a
+        <include refid="AppointmentQueryJoins"/>
+        WHERE a.sales_user_id = #{salesUserId}
         <if test="query.status != null">
-          AND status = #{query.status}
+          AND a.status = #{query.status}
         </if>
-        ORDER BY appointment_time DESC, id DESC
+        ORDER BY a.appointment_time DESC, a.id DESC
     </select>
 
     <select id="selectAdminPage" resultMap="AppointmentQueryResultMap">
         SELECT
-            a.id,
-            a.user_id,
-            a.sales_user_id,
-            COALESCE(s.real_name, s.username) AS sales_name,
-            a.building_id,
-            b.name AS building_name,
-            a.room_id,
-            r.room_no,
-            a.appointment_time,
-            a.contact_name,
-            a.contact_phone,
-            a.remark,
-            a.status,
-            a.cancel_reason,
-            a.create_time
+        <include refid="AppointmentQueryColumns"/>
         FROM appointment a
-        LEFT JOIN building b ON a.building_id = b.id AND b.deleted = 0
-        LEFT JOIN room r ON a.room_id = r.id
-        LEFT JOIN `user` s ON a.sales_user_id = s.id
+        <include refid="AppointmentQueryJoins"/>
         WHERE 1 = 1
+        <if test="buildingId != null">
+          AND r.building_id = #{buildingId}
+        </if>
         <if test="estateId != null">
-          AND a.building_id = #{estateId}
+          AND r.building_id = #{estateId}
+        </if>
+        <if test="buildingName != null and buildingName != ''">
+          AND b.name LIKE CONCAT('%', #{buildingName}, '%')
         </if>
         <if test="salesUserId != null">
           AND a.sales_user_id = #{salesUserId}
+        </if>
+        <if test="salesName != null and salesName != ''">
+          AND COALESCE(s.real_name, s.username) LIKE CONCAT('%', #{salesName}, '%')
+        </if>
+        <if test="contactName != null and contactName != ''">
+          AND a.contact_name LIKE CONCAT('%', #{contactName}, '%')
+        </if>
+        <if test="contactPhone != null and contactPhone != ''">
+          AND a.contact_phone LIKE CONCAT('%', #{contactPhone}, '%')
         </if>
         <if test="status != null">
           AND a.status = #{status}

@@ -25,9 +25,13 @@ public interface RoomMapper {
 
     RoomQueryDTO selectDetailById(@Param("id") Long id);
 
+    RoomQueryDTO selectVisibleDetailById(@Param("id") Long id);
+
     int countByRoomNo(@Param("unitId") Long unitId, @Param("roomNo") String roomNo, @Param("excludeId") Long excludeId);
 
     int countByUnitId(@Param("unitId") Long unitId);
 
     List<RoomQueryDTO> selectPage(RoomPageQueryDTO queryDTO);
+
+    List<RoomQueryDTO> selectVisiblePage(RoomPageQueryDTO queryDTO);
 }

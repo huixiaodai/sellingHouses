@@ -414,8 +414,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `estateId` | Long | 是 | 楼盘ID |
-| `roomId` | Long | 否 | 意向房源ID |
+| `roomId` | Long | 是 | 房源ID，预约必须绑定具体房源 |
 | `appointmentTime` | LocalDateTime | 是 | 预约时间 |
 | `contactName` | String | 是 | 联系人 |
 | `contactPhone` | String | 是 | 联系电话 |
@@ -463,8 +462,11 @@
 | --- | --- | --- | --- |
 | `pageNo` | Integer | 否 | 页码 |
 | `pageSize` | Integer | 否 | 每页条数 |
-| `estateId` | Long | 否 | 楼盘ID |
+| `buildingId` | Long | 否 | 楼盘ID，实际按 `room.building_id` 过滤 |
+| `estateId` | Long | 否 | 兼容旧参数，实际按 `room.building_id` 过滤 |
 | `salesUserId` | Long | 否 | 销售ID |
+| `contactName` | String | 否 | 联系人 |
+| `contactPhone` | String | 否 | 手机号 |
 | `status` | Integer | 否 | 预约状态 |
 
 响应数据：`PageResult<AppointmentVO>`

@@ -114,6 +114,31 @@ public class BuildingServiceImpl implements BuildingService {
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
 
+    @Override
+    public BuildingVO mobileDetail(IdDTO idDTO) {
+        requireLogin();
+        Building building = buildingMapper.selectVisibleById(idDTO.getId());
+        if (building == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "楼盘不存在");
+        }
+        return toVO(building);
+    }
+
+    @Override
+    public PageResult<BuildingVO> mobilePage(BuildingPageQueryDTO queryDTO) {
+        requireLogin();
+        if (queryDTO.getStatus() != null) {
+            BuildingStatusEnum.validate(queryDTO.getStatus());
+        }
+        int pageNo = queryDTO.getPageNo() == null ? 1 : queryDTO.getPageNo();
+        int pageSize = queryDTO.getPageSize() == null ? 10 : queryDTO.getPageSize();
+        PageHelper.startPage(pageNo, pageSize);
+        List<Building> buildings = buildingMapper.selectVisiblePage(queryDTO);
+        PageInfo<Building> pageInfo = new PageInfo<>(buildings);
+        List<BuildingVO> records = buildings.stream().map(this::toVO).toList();
+        return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
+    }
+
     private Building requireBuilding(Long id) {
         Building building = buildingMapper.selectById(id);
         if (building == null) {
@@ -134,6 +159,10 @@ public class BuildingServiceImpl implements BuildingService {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         return loginUser;
+    }
+
+    private void requireLogin() {
+        LoginUserHolder.getRequired();
     }
 
     private BuildingVO toVO(Building building) {

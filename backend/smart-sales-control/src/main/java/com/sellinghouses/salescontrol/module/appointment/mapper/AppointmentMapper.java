@@ -20,9 +20,9 @@ public interface AppointmentMapper {
 
     Appointment selectById(@Param("id") Long id);
 
-    List<Appointment> selectUserPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("userId") Long userId);
+    List<AppointmentQueryDTO> selectUserPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("userId") Long userId);
 
-    List<Appointment> selectSalesPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("salesUserId") Long salesUserId);
+    List<AppointmentQueryDTO> selectSalesPage(@Param("query") AppointmentPageQueryDTO queryDTO, @Param("salesUserId") Long salesUserId);
 
     List<AppointmentQueryDTO> selectAdminPage(AdminAppointmentPageQueryDTO queryDTO);
 }

@@ -16,6 +16,9 @@ public class AppointmentVO {
     @Schema(description = "Customer user ID")
     private final Long userId;
 
+    @Schema(description = "Customer name")
+    private final String customerName;
+
     @Schema(description = "Sales user ID")
     private final Long salesUserId;
 
@@ -30,6 +33,12 @@ public class AppointmentVO {
 
     @Schema(description = "Building name")
     private final String buildingName;
+
+    @Schema(description = "Building unit ID")
+    private final Long unitId;
+
+    @Schema(description = "Building unit name")
+    private final String unitName;
 
     @Schema(description = "Room ID")
     private final Long roomId;
