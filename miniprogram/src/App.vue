@@ -1,6 +1,40 @@
 <script>
+import { getCurrentUser } from './api/auth';
+import { getRoleHomePath } from './utils/roleHome';
+import { getToken, getUserInfo, setUserInfo } from './utils/storage';
+
 export default {
-  onLaunch() {}
+  onLaunch() {},
+  onShow() {
+    this.redirectSalesAwayFromCustomerHome();
+  },
+  methods: {
+    async redirectSalesAwayFromCustomerHome() {
+      if (!getToken()) {
+        return;
+      }
+      const pages = getCurrentPages();
+      const current = pages[pages.length - 1];
+      if (!current || current.route !== 'pages/home/home') {
+        return;
+      }
+      try {
+        const currentUser = await getCurrentUser();
+        const nextUser = {
+          ...(getUserInfo() || {}),
+          ...currentUser
+        };
+        setUserInfo(nextUser);
+        if (nextUser.roleCode === 'SALES') {
+          uni.reLaunch({
+            url: getRoleHomePath(nextUser)
+          });
+        }
+      } catch {
+        // Request interceptor handles invalid login state.
+      }
+    }
+  }
 };
 </script>
 

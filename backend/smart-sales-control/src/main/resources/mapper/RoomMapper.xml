@@ -45,6 +45,37 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
+    <resultMap id="EstateControlResultMap" type="com.sellinghouses.salescontrol.module.room.vo.EstateControlVO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="cover" property="cover"/>
+        <result column="address" property="address"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="available_count" property="availableCount"/>
+        <result column="sold_count" property="soldCount"/>
+        <result column="locked_count" property="lockedCount"/>
+    </resultMap>
+
+    <resultMap id="UnitControlResultMap" type="com.sellinghouses.salescontrol.module.room.vo.UnitControlVO">
+        <id column="id" property="id"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="name" property="name"/>
+        <result column="sort_no" property="sortNo"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="available_count" property="availableCount"/>
+        <result column="sold_count" property="soldCount"/>
+        <result column="locked_count" property="lockedCount"/>
+    </resultMap>
+
+    <resultMap id="FloorControlResultMap" type="com.sellinghouses.salescontrol.module.room.vo.FloorControlVO">
+        <id column="floor_no" property="floorNo"/>
+        <result column="unit_id" property="unitId"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="available_count" property="availableCount"/>
+        <result column="sold_count" property="soldCount"/>
+        <result column="locked_count" property="lockedCount"/>
+    </resultMap>
+
     <sql id="RoomColumns">
         id,
         building_id,
@@ -312,5 +343,126 @@
           AND r.status = #{status}
         </if>
         ORDER BY r.building_id ASC, r.unit_id ASC, r.floor_no ASC, r.room_no ASC
+    </select>
+
+    <select id="selectEstateControlList" resultMap="EstateControlResultMap">
+        SELECT
+            b.id,
+            b.name,
+            b.cover,
+            b.address,
+            COUNT(r.id) AS total_count,
+            COALESCE(SUM(CASE WHEN r.status = 0 THEN 1 ELSE 0 END), 0) AS available_count,
+            COALESCE(SUM(CASE WHEN r.status = 1 THEN 1 ELSE 0 END), 0) AS sold_count,
+            COALESCE(SUM(CASE WHEN r.status = 2 THEN 1 ELSE 0 END), 0) AS locked_count
+        FROM building b
+        LEFT JOIN room r ON r.building_id = b.id AND r.deleted = 0
+        WHERE b.deleted = 0
+          AND b.status = 1
+        GROUP BY b.id, b.name, b.cover, b.address
+        ORDER BY b.id DESC
+    </select>
+
+    <select id="selectUnitControlList" resultMap="UnitControlResultMap">
+        SELECT
+            bu.id,
+            bu.building_id,
+            bu.name,
+            bu.sort_no,
+            COUNT(r.id) AS total_count,
+            COALESCE(SUM(CASE WHEN r.status = 0 THEN 1 ELSE 0 END), 0) AS available_count,
+            COALESCE(SUM(CASE WHEN r.status = 1 THEN 1 ELSE 0 END), 0) AS sold_count,
+            COALESCE(SUM(CASE WHEN r.status = 2 THEN 1 ELSE 0 END), 0) AS locked_count
+        FROM building_unit bu
+        INNER JOIN building b ON bu.building_id = b.id AND b.deleted = 0 AND b.status = 1
+        LEFT JOIN room r ON r.unit_id = bu.id AND r.deleted = 0
+        WHERE bu.deleted = 0
+          AND bu.status = 1
+          AND bu.building_id = #{buildingId}
+        GROUP BY bu.id, bu.building_id, bu.name, bu.sort_no
+        ORDER BY bu.sort_no ASC, bu.id ASC
+    </select>
+
+    <select id="selectFloorControlList" resultMap="FloorControlResultMap">
+        SELECT
+            r.unit_id,
+            r.floor_no,
+            COUNT(r.id) AS total_count,
+            COALESCE(SUM(CASE WHEN r.status = 0 THEN 1 ELSE 0 END), 0) AS available_count,
+            COALESCE(SUM(CASE WHEN r.status = 1 THEN 1 ELSE 0 END), 0) AS sold_count,
+            COALESCE(SUM(CASE WHEN r.status = 2 THEN 1 ELSE 0 END), 0) AS locked_count
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
+        WHERE r.deleted = 0
+          AND r.unit_id = #{unitId}
+        GROUP BY r.unit_id, r.floor_no
+        ORDER BY r.floor_no DESC
+    </select>
+
+    <select id="selectSaleControlRooms" resultMap="RoomQueryResultMap">
+        SELECT
+            r.id,
+            r.building_id,
+            b.name AS building_name,
+            r.unit_id,
+            bu.name AS unit_name,
+            r.room_no,
+            r.floor_no,
+            r.area,
+            r.price,
+            r.cover,
+            r.images,
+            r.layout,
+            r.orientation,
+            r.decoration,
+            r.status,
+            r.remark,
+            r.create_time
+        FROM room r
+        INNER JOIN building b ON r.building_id = b.id AND b.deleted = 0 AND b.status = 1
+        INNER JOIN building_unit bu ON r.unit_id = bu.id AND bu.deleted = 0 AND bu.status = 1
+        WHERE r.deleted = 0
+        <if test="buildingId != null">
+          AND r.building_id = #{buildingId}
+        </if>
+        <if test="unitId != null">
+          AND r.unit_id = #{unitId}
+        </if>
+        <if test="floorNo != null">
+          AND r.floor_no = #{floorNo}
+        </if>
+        <if test="keyword != null and keyword != ''">
+          AND (
+              r.room_no LIKE CONCAT('%', #{keyword}, '%')
+              OR CONCAT(bu.name, r.room_no) LIKE CONCAT('%', #{keyword}, '%')
+              OR CONCAT(b.id, '-', bu.id, '-', r.room_no) LIKE CONCAT('%', #{keyword}, '%')
+          )
+        </if>
+        <if test="minPrice != null">
+          AND r.price &gt;= #{minPrice}
+        </if>
+        <if test="maxPrice != null">
+          AND r.price &lt;= #{maxPrice}
+        </if>
+        <if test="minArea != null">
+          AND r.area &gt;= #{minArea}
+        </if>
+        <if test="maxArea != null">
+          AND r.area &lt;= #{maxArea}
+        </if>
+        <if test="layout != null and layout != ''">
+          AND r.layout = #{layout}
+        </if>
+        <if test="orientation != null and orientation != ''">
+          AND r.orientation = #{orientation}
+        </if>
+        <if test="decoration != null and decoration != ''">
+          AND r.decoration = #{decoration}
+        </if>
+        <if test="status != null">
+          AND r.status = #{status}
+        </if>
+        ORDER BY r.floor_no DESC, r.room_no ASC
     </select>
 </mapper>

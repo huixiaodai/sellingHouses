@@ -62,8 +62,8 @@ public class RoomUpdateDTO {
 
     @NotNull(message = "房源状态不能为空")
     @Min(value = 0, message = "房源状态不合法")
-    @Max(value = 1, message = "房源状态不合法")
-    @Schema(description = "状态：0待售，1已售", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Max(value = 2, message = "房源状态不合法")
+    @Schema(description = "状态：0待售，1已售，2锁定", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer status;
 
     @Schema(description = "备注")

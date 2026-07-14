@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum RoomStatusEnum {
 
     AVAILABLE(0, "待售"),
-    SOLD(1, "已售");
+    SOLD(1, "已售"),
+    LOCKED(2, "锁定");
 
     private final Integer code;
 

@@ -53,6 +53,7 @@ import { onPullDownRefresh, onReachBottom, onShow } from '@dcloudio/uni-app';
 import { getRoomPage } from '../../api/room';
 import { requireLogin } from '../../utils/authGuard';
 import { formatPrice, getRoomStatus, getRoomStatusClass } from '../../utils/format';
+import { redirectSalesFromCustomerHome, redirectSalesFromCustomerHomeByServer } from '../../utils/roleGuard';
 
 const pageNo = ref(1);
 const pageSize = 20;
@@ -61,8 +62,14 @@ const loading = ref(false);
 const rooms = ref([]);
 const hasMore = ref(true);
 
-onShow(() => {
+onShow(async () => {
   if (!requireLogin()) {
+    return;
+  }
+  if (redirectSalesFromCustomerHome()) {
+    return;
+  }
+  if (await redirectSalesFromCustomerHomeByServer()) {
     return;
   }
   if (rooms.value.length === 0) {
@@ -282,6 +289,11 @@ function goAppointments() {
 .status-unknown {
   color: #9a342f;
   background: #f7dedb;
+}
+
+.status-locked {
+  color: #5d6460;
+  background: #eeeeee;
 }
 
 .state {

@@ -8,8 +8,8 @@ import lombok.Getter;
 public enum UserRoleEnum {
 
     ADMIN("ADMIN", "超级管理员", "/dashboard"),
-    SALES("SALES", "销售", "/pages/home/index"),
-    CUSTOMER("CUSTOMER", "购房用户", "/pages/home/index");
+    SALES("SALES", "销售", "/pages/estate/index"),
+    CUSTOMER("CUSTOMER", "购房用户", "/pages/home/home");
 
     private final String code;
 

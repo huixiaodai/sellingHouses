@@ -13,3 +13,17 @@ export function getBuildingDetail(id) {
     data: { id }
   });
 }
+
+export function getControlBuildingList(estateId) {
+  return request({
+    url: '/api/building/list',
+    data: { estateId }
+  });
+}
+
+export function getFloorList(params) {
+  return request({
+    url: '/api/floor/list',
+    data: params
+  });
+}

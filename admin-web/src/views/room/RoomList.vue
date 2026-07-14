@@ -95,7 +95,10 @@
                   type="button"
                   @click="openDetail(room.id)"
                 >
-                  <span class="room-no">{{ room.roomNo }}</span>
+                  <span class="room-title">
+                    <span class="room-no">{{ room.roomNo }}</span>
+                    <span v-if="room.unitName" class="room-unit-name">{{ room.unitName }}</span>
+                  </span>
                   <span class="room-meta">{{ room.area || '-' }}㎡</span>
                   <span class="room-price">￥{{ formatPrice(room.price) }}</span>
                   <el-tag size="small" :type="getOptionType(roomStatusOptions, room.status)">
@@ -764,10 +767,28 @@ onMounted(loadRoomTree);
   }
 }
 
+.room-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 8px;
+}
+
 .room-no {
   color: var(--admin-text);
   font-size: 18px;
   font-weight: 700;
+}
+
+.room-unit-name {
+  overflow: hidden;
+  color: #ff4d4f;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .room-meta,

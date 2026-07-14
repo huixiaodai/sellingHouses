@@ -101,10 +101,9 @@
 
 | 编码 | 状态 | 展示颜色 |
 | --- | --- | --- |
-| `1` | 待售 | 绿色 |
-| `2` | 已预订 | 黄色 |
-| `3` | 已售 | 红色 |
-| `4` | 不可售 | 灰色 |
+| `0` | 待售 | 绿色 |
+| `1` | 已售 | 红色 |
+| `2` | 锁定 | 灰色 |
 
 ## 2. 登录模块
 
@@ -314,7 +313,7 @@
 | `layout` | String | 否 | 户型 |
 | `orientation` | String | 否 | 朝向 |
 | `decoration` | String | 否 | 装修 |
-| `status` | Integer | 否 | 0待售，1已预订，2已售，3不可售 |
+| `status` | Integer | 否 | 0待售，1已售，2锁定 |
 | `remark` | String | 否 | 备注 |
 
 响应数据：`id`
@@ -638,7 +637,7 @@
 | `totalRoomCount` | Long | 总房源数 |
 | `soldRoomCount` | Long | 已售房源数 |
 | `availableRoomCount` | Long | 待售房源数 |
-| `reservedRoomCount` | Long | 已预订房源数 |
+| `lockedRoomCount` | Long | 锁定房源数 |
 | `appointmentCount` | Long | 预约数量 |
 | `userCount` | Long | 用户数量 |
 | `salesCount` | Long | 销售数量 |

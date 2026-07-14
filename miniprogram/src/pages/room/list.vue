@@ -271,16 +271,12 @@ function goDetail(id) {
   background: #e5f4ea;
 }
 
-.status-reserved {
-  color: #8b5f20;
-  background: #f8ebcf;
-}
-
 .status-sold {
   color: #9a342f;
   background: #f7dedb;
 }
 
+.status-locked,
 .status-unavailable,
 .status-unknown {
   color: #6b7280;

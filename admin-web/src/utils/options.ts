@@ -5,7 +5,8 @@ export const enabledStatusOptions = [
 
 export const roomStatusOptions = [
   { label: '待售', value: 0, type: 'success' },
-  { label: '已售', value: 1, type: 'danger' }
+  { label: '已售', value: 1, type: 'danger' },
+  { label: '锁定', value: 2, type: 'info' }
 ] as const;
 
 export const appointmentStatusOptions = [

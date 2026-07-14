@@ -15,6 +15,34 @@
       }
     },
     {
+      "path": "pages/estate/index",
+      "style": {
+        "navigationBarTitleText": "楼盘销控",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/building/index",
+      "style": {
+        "navigationBarTitleText": "楼栋销控",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/floor/index",
+      "style": {
+        "navigationBarTitleText": "楼层销控",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/control/index",
+      "style": {
+        "navigationBarTitleText": "销控图",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
       "path": "pages/home/home",
       "style": {
         "navigationBarTitleText": "房源"
@@ -48,7 +76,7 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "售楼大厅",
-    "navigationBarBackgroundColor": "#f6f3ec",
-    "backgroundColor": "#f6f3ec"
+    "navigationBarBackgroundColor": "#f7f8f5",
+    "backgroundColor": "#f7f8f5"
   }
 }

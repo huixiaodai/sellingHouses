@@ -75,7 +75,7 @@
     <view v-if="room" class="action-bar">
       <button class="secondary-button" @tap="goAppointments">我的预约</button>
       <button class="primary-button" :disabled="!canBook" @tap="openAppointment">
-        {{ canBook ? '预约看房' : '已售不可预约' }}
+        {{ canBook ? '预约看房' : '当前不可预约' }}
       </button>
     </view>
 
@@ -190,7 +190,7 @@ async function loadDetail() {
 
 function openAppointment() {
   if (!canBook.value) {
-    uni.showToast({ title: '已售房源不能预约', icon: 'none' });
+    uni.showToast({ title: '当前房源不可预约', icon: 'none' });
     return;
   }
   const userInfo = getUserInfo() || {};
@@ -359,6 +359,7 @@ function formatDate(date) {
   background: #f7dedb;
 }
 
+.status-locked,
 .status-unknown {
   color: #6b7280;
   background: #ece8df;

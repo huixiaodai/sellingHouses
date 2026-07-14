@@ -17,12 +17,17 @@ import com.sellinghouses.salescontrol.module.room.dto.RoomAddDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPageQueryDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPriceUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomQueryDTO;
+import com.sellinghouses.salescontrol.module.room.dto.SaleControlQueryDTO;
+import com.sellinghouses.salescontrol.module.room.dto.SaleControlSearchDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.entity.Room;
 import com.sellinghouses.salescontrol.module.room.mapper.RoomMapper;
 import com.sellinghouses.salescontrol.module.room.service.RoomService;
+import com.sellinghouses.salescontrol.module.room.vo.EstateControlVO;
+import com.sellinghouses.salescontrol.module.room.vo.FloorControlVO;
 import com.sellinghouses.salescontrol.module.room.vo.RoomVO;
+import com.sellinghouses.salescontrol.module.room.vo.UnitControlVO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -148,6 +153,49 @@ public class RoomServiceImpl implements RoomService {
         return new PageResult<>(records, pageNo, pageSize, pageInfo.getTotal());
     }
 
+    @Override
+    public List<EstateControlVO> listEstateControls() {
+        requireLogin();
+        return roomMapper.selectEstateControlList();
+    }
+
+    @Override
+    public List<UnitControlVO> listUnitControls(Long buildingId) {
+        requireLogin();
+        if (buildingMapper.selectVisibleById(buildingId) == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "楼盘不存在");
+        }
+        return roomMapper.selectUnitControlList(buildingId);
+    }
+
+    @Override
+    public List<FloorControlVO> listFloorControls(Long unitId) {
+        requireLogin();
+        BuildingUnit unit = buildingUnitMapper.selectById(unitId);
+        if (unit == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "楼栋不存在");
+        }
+        return roomMapper.selectFloorControlList(unitId);
+    }
+
+    @Override
+    public List<RoomVO> listSaleControlRooms(SaleControlQueryDTO queryDTO) {
+        requireLogin();
+        validateSaleControlStatus(queryDTO.getStatus());
+        return roomMapper.selectSaleControlRooms(queryDTO).stream().map(this::toVO).toList();
+    }
+
+    @Override
+    public List<RoomVO> searchSaleControlRooms(SaleControlSearchDTO searchDTO) {
+        requireLogin();
+        SaleControlQueryDTO queryDTO = new SaleControlQueryDTO();
+        queryDTO.setKeyword(searchDTO.getKeyword());
+        queryDTO.setBuildingId(searchDTO.getBuildingId());
+        queryDTO.setUnitId(searchDTO.getUnitId());
+        PageHelper.startPage(1, 20);
+        return roomMapper.selectSaleControlRooms(queryDTO).stream().map(this::toVO).toList();
+    }
+
     private void fillRoom(Room room, Long buildingId, Long unitId, String roomNo, Integer floorNo,
                           java.math.BigDecimal area, java.math.BigDecimal price, String cover, String images,
                           String layout, String orientation, String decoration, Integer status, String remark) {
@@ -203,6 +251,12 @@ public class RoomServiceImpl implements RoomService {
 
     private void requireLogin() {
         LoginUserHolder.getRequired();
+    }
+
+    private void validateSaleControlStatus(Integer status) {
+        if (status != null) {
+            RoomStatusEnum.validate(status);
+        }
     }
 
     private RoomVO toVO(Room room) {

@@ -5,9 +5,15 @@ import com.sellinghouses.salescontrol.common.result.PageResult;
 import com.sellinghouses.salescontrol.module.room.dto.RoomAddDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPageQueryDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomPriceUpdateDTO;
+import com.sellinghouses.salescontrol.module.room.dto.SaleControlQueryDTO;
+import com.sellinghouses.salescontrol.module.room.dto.SaleControlSearchDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomStatusUpdateDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomUpdateDTO;
+import com.sellinghouses.salescontrol.module.room.vo.EstateControlVO;
+import com.sellinghouses.salescontrol.module.room.vo.FloorControlVO;
 import com.sellinghouses.salescontrol.module.room.vo.RoomVO;
+import com.sellinghouses.salescontrol.module.room.vo.UnitControlVO;
+import java.util.List;
 
 public interface RoomService {
 
@@ -78,4 +84,43 @@ public interface RoomService {
      * @return visible room page result
      */
     PageResult<RoomVO> mobilePage(RoomPageQueryDTO queryDTO);
+
+    /**
+     * Query estate summaries for sale control.
+     *
+     * @return estate summaries with status counts
+     */
+    List<EstateControlVO> listEstateControls();
+
+    /**
+     * Query building unit summaries for sale control.
+     *
+     * @param buildingId building ID
+     * @return building unit summaries with status counts
+     */
+    List<UnitControlVO> listUnitControls(Long buildingId);
+
+    /**
+     * Query floor summaries for sale control.
+     *
+     * @param unitId building unit ID
+     * @return floor summaries with status counts
+     */
+    List<FloorControlVO> listFloorControls(Long unitId);
+
+    /**
+     * Query rooms for the sale control grid.
+     *
+     * @param queryDTO query request
+     * @return room list
+     */
+    List<RoomVO> listSaleControlRooms(SaleControlQueryDTO queryDTO);
+
+    /**
+     * Search rooms by room number for sale control.
+     *
+     * @param searchDTO search request
+     * @return matched rooms
+     */
+    List<RoomVO> searchSaleControlRooms(SaleControlSearchDTO searchDTO);
 }

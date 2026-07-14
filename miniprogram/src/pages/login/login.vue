@@ -46,6 +46,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { login } from '../../api/auth';
+import { getRoleHomePath } from '../../utils/roleHome';
 import { setToken, setUserInfo } from '../../utils/storage';
 
 const loading = ref(false);
@@ -77,16 +78,17 @@ async function handleLogin() {
       password: form.password
     });
     setToken(data.token);
-    setUserInfo({
+    const userInfo = {
       userId: data.userId,
       username: data.username,
       realName: data.realName,
       roleCode: data.roleCode,
       homePath: data.homePath
-    });
+    };
+    setUserInfo(userInfo);
     uni.showToast({ title: '登录成功', icon: 'success' });
     uni.reLaunch({
-      url: '/pages/home/home'
+      url: getRoleHomePath(userInfo)
     });
   } finally {
     loading.value = false;

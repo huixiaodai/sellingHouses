@@ -13,3 +13,25 @@ export function getRoomDetail(id) {
     data: { id }
   });
 }
+
+export function getControlRoomList(params) {
+  return request({
+    url: '/api/room/list',
+    data: params
+  });
+}
+
+export function searchControlRooms(params) {
+  return request({
+    url: '/api/room/search',
+    data: params
+  });
+}
+
+export function filterControlRooms(data) {
+  return request({
+    url: '/api/room/filter',
+    method: 'POST',
+    data
+  });
+}

@@ -2,7 +2,11 @@ package com.sellinghouses.salescontrol.module.room.mapper;
 
 import com.sellinghouses.salescontrol.module.room.dto.RoomPageQueryDTO;
 import com.sellinghouses.salescontrol.module.room.dto.RoomQueryDTO;
+import com.sellinghouses.salescontrol.module.room.dto.SaleControlQueryDTO;
 import com.sellinghouses.salescontrol.module.room.entity.Room;
+import com.sellinghouses.salescontrol.module.room.vo.EstateControlVO;
+import com.sellinghouses.salescontrol.module.room.vo.FloorControlVO;
+import com.sellinghouses.salescontrol.module.room.vo.UnitControlVO;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -34,4 +38,12 @@ public interface RoomMapper {
     List<RoomQueryDTO> selectPage(RoomPageQueryDTO queryDTO);
 
     List<RoomQueryDTO> selectVisiblePage(RoomPageQueryDTO queryDTO);
+
+    List<EstateControlVO> selectEstateControlList();
+
+    List<UnitControlVO> selectUnitControlList(@Param("buildingId") Long buildingId);
+
+    List<FloorControlVO> selectFloorControlList(@Param("unitId") Long unitId);
+
+    List<RoomQueryDTO> selectSaleControlRooms(SaleControlQueryDTO queryDTO);
 }
